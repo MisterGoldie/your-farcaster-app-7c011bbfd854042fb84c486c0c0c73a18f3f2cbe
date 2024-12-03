@@ -56,6 +56,9 @@ export default function Game() {
               text: "Play Again",
               enabled: true
             });
+
+            // Add event listener for primary button
+            window.sdk.events.on("primaryButtonClick", handleRestart);
           }
         };
       } catch (error) {
@@ -67,33 +70,14 @@ export default function Game() {
 
     return () => {
       const sdkScript = document.querySelector('script[src*="farcaster"]');
-      if (sdkScript) sdkScript.remove();
+      if (sdkScript) {
+        sdkScript.remove();
+        if (window.sdk) {
+          window.sdk.events.off("primaryButtonClick", handleRestart);
+        }
+      }
     };
   }, []);
-
-  const handleGameOver = async (score: number) => {
-    if (farcasterContext?.user?.fid) {
-      try {
-        await fetch('/api/game/state', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            fid: farcasterContext.user.fid,
-            state: {
-              score,
-              difficulty,
-              piece,
-              gameStarted: true
-            }
-          })
-        });
-      } catch (error) {
-        console.error('Failed to update game state:', error);
-      }
-    }
-  };
 
   const handleRestart = async () => {
     setKey(prevKey => prevKey + 1);
@@ -129,13 +113,13 @@ export default function Game() {
         key={key}
         onRestart={handleRestart}
         onBackToMenu={handleBackToMenu}
-        onGameOver={handleGameOver}
         difficulty={difficulty}
         piece={piece}
         isMuted={isMuted}
         toggleMute={toggleMute}
-        farcasterUser={farcasterContext?.user}
-      />
+        farcasterUser={farcasterContext?.user} onGameOver={function (score: number): void {
+          throw new Error('Function not implemented.')
+        } }      />
     </main>
   )
 }
@@ -143,7 +127,10 @@ export default function Game() {
 declare global {
   interface Window {
     sdk: {
-      events: any;
+      events: {
+        on: (event: string, callback: () => void) => void;
+        off: (event: string, callback: () => void) => void;
+      };
       actions: {
         ready: () => Promise<void>;
         setPrimaryButton: (options: {
