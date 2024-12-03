@@ -432,20 +432,14 @@ const backgroundColors = [
 interface TicTacToe3DProps {
   onRestart: () => void;
   onBackToMenu: () => void;
-  onGameOver: (score: number) => void;
+  onGameOver: () => void;
   difficulty: 'easy' | 'medium' | 'hard';
   piece: 'chili' | 'scarygary' | 'podplaylogo';
   isMuted: boolean;
   toggleMute: () => void;
-  farcasterUser?: {
-    fid: number;
-    username?: string;
-    displayName?: string;
-  };
 }
 
 export default function TicTacToe3D({ 
-  farcasterUser, 
   onRestart, 
   onBackToMenu, 
   onGameOver,
@@ -460,11 +454,13 @@ export default function TicTacToe3D({
 
   const handleGameOver = (score: number) => {
     setCurrentScore(score);
-    onGameOver(score);
+    onGameOver();
   }
 
-  function handleRestart(): void {
-    throw new Error('Function not implemented.');
+  const handleRestart = () => {
+    setBackgroundColor(backgroundColors[Math.floor(Math.random() * backgroundColors.length)])
+    playClick()
+    onRestart()
   }
 
   return (

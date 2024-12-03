@@ -121,7 +121,7 @@ export default function FrameGameWrapper({ initialGameState }: FrameGameWrapperP
                       isMuted={isMuted}
                       toggleMute={toggleMute}
                       onRestart={() => handleStartGame(gameSettings.difficulty || 'easy', gameSettings.piece || 'chili')}
-                      onBackToMenu={handleBackToMenu} onGameOver={function (score: number): void {
+                      onBackToMenu={handleBackToMenu} onGameOver={() => {
                           throw new Error('Function not implemented.')
                       } }        />
       )}
