@@ -50,10 +50,27 @@ export async function validateWithNeynar(messageBytes: string): Promise<any> {
   return response.json()
 }
 
-export async function createFrame(params: string) {
+export async function createFrame(params: {
+  imageUrl: string;
+  buttonTitle: string;
+  actionType?: 'post' | 'link';
+  actionTarget?: string;
+}) {
+  const frameEmbed = {
+    version: 'vNext',
+    imageUrl: params.imageUrl,
+    button: {
+      title: params.buttonTitle,
+      action: {
+        type: params.actionType || 'post',
+        ...(params.actionTarget && { target: params.actionTarget })
+      }
+    },
+    aspectRatio: '1:1'
+  }
+
   return `<!DOCTYPE html><html><head>
-    <meta property="fc:frame" content="vNext" />
-    ${params}
+    <meta property="fc:frame" content="${JSON.stringify(frameEmbed)}" />
     <meta property="fc:frame:image:aspect_ratio" content="1:1" />
     </head></html>`
 }

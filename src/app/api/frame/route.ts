@@ -1,19 +1,28 @@
 import { NextRequest } from 'next/server'
 
 export async function GET(req: NextRequest) {
-  const searchParams = new URLSearchParams(req.nextUrl.searchParams)
-  const buttonId = searchParams.get('buttonId')
+  const frameEmbed = {
+    version: 'vNext',
+    imageUrl: `${process.env.NEXT_PUBLIC_URL}/game-preview.png`,
+    button: {
+      title: 'Start Game',
+      action: {
+        type: 'launch_frame',
+        name: 'POD Play',
+        url: `${process.env.NEXT_PUBLIC_URL}/api/frame`,
+        splashImageUrl: `${process.env.NEXT_PUBLIC_URL}/splash.png`,
+        splashBackgroundColor: '#9333ea'
+      }
+    }
+  }
 
   return new Response(
     `<!DOCTYPE html>
     <html>
       <head>
         <title>POD Play Tic-Tac-Toe</title>
-        <meta property="fc:frame" content="vNext" />
-        <meta property="fc:frame:image" content="https://your-domain.com/game-preview.png" />
-        <meta property="fc:frame:button:1" content="Start Game" />
-        <meta property="fc:frame:button:1:action" content="post" />
-        <meta property="og:image" content="https://your-domain.com/game-preview.png" />
+        <meta property="fc:frame" content="${JSON.stringify(frameEmbed)}" />
+        <meta property="og:image" content="${frameEmbed.imageUrl}" />
       </head>
     </html>`,
     {
@@ -29,20 +38,33 @@ export async function POST(req: NextRequest) {
   const { untrustedData } = data
   const { buttonIndex } = untrustedData
 
-  let nextImage = 'https://your-domain.com/game-board.png'
-  let nextButtons = ['Play Again', 'Share Score']
+  const frameEmbed = {
+    version: 'vNext',
+    imageUrl: `${process.env.NEXT_PUBLIC_URL}/game-board.png`,
+    buttons: [
+      {
+        title: 'Play Again',
+        action: {
+          type: 'post',
+          url: `${process.env.NEXT_PUBLIC_URL}/api/frame`
+        }
+      },
+      {
+        title: 'Share Score',
+        action: {
+          type: 'post',
+          url: `${process.env.NEXT_PUBLIC_URL}/api/frame/share`
+        }
+      }
+    ]
+  }
 
   return new Response(
     `<!DOCTYPE html>
     <html>
       <head>
         <title>POD Play Tic-Tac-Toe</title>
-        <meta property="fc:frame" content="vNext" />
-        <meta property="fc:frame:image" content="${nextImage}" />
-        <meta property="fc:frame:button:1" content="${nextButtons[0]}" />
-        <meta property="fc:frame:button:2" content="${nextButtons[1]}" />
-        <meta property="fc:frame:button:1:action" content="post" />
-        <meta property="fc:frame:button:2:action" content="post" />
+        <meta property="fc:frame" content="${JSON.stringify(frameEmbed)}" />
       </head>
     </html>`,
     {
