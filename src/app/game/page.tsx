@@ -3,8 +3,6 @@
 import { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
-import Head from 'next/head'
-import { NextRequest, NextResponse } from 'next/server'
 
 const TicTacToe3D = dynamic(() => import('../components/TicTacToe3D'), { ssr: false })
 
@@ -20,47 +18,6 @@ interface FarcasterContext {
       hash: string;
     };
   };
-}
-
-interface FrameState {
-  difficulty?: 'easy' | 'medium' | 'hard'
-  piece?: 'chili' | 'scarygary' | 'podplaylogo'
-  gameStarted: boolean
-  score?: number
-}
-
-// In-memory state store (consider using Redis/DB for production)
-const frameStates = new Map<string, FrameState>()
-
-export async function POST(req: NextRequest) {
-  try {
-    const data = await req.json()
-    const { fid, state } = data
-    
-    if (!fid) {
-      return NextResponse.json({ error: 'Missing fid' }, { status: 400 })
-    }
-
-    frameStates.set(fid.toString(), state)
-    return NextResponse.json({ success: true })
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed to update state' }, { status: 500 })
-  }
-}
-
-export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url)
-  const fid = searchParams.get('fid')
-
-  if (!fid) {
-    return NextResponse.json({ error: 'Missing fid' }, { status: 400 })
-  }
-
-  const state = frameStates.get(fid) || {
-    gameStarted: false
-  }
-
-  return NextResponse.json(state)
 }
 
 export default function Game() {
@@ -114,6 +71,30 @@ export default function Game() {
     };
   }, []);
 
+  const handleGameOver = async (score: number) => {
+    if (farcasterContext?.user?.fid) {
+      try {
+        await fetch('/api/game/state', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            fid: farcasterContext.user.fid,
+            state: {
+              score,
+              difficulty,
+              piece,
+              gameStarted: true
+            }
+          })
+        });
+      } catch (error) {
+        console.error('Failed to update game state:', error);
+      }
+    }
+  };
+
   const handleRestart = async () => {
     setKey(prevKey => prevKey + 1);
     
@@ -143,44 +124,26 @@ export default function Game() {
   const toggleMute = () => setIsMuted(!isMuted);
 
   return (
-    <>
-      <Head>
-        <meta property="fc:frame" content={JSON.stringify({
-          version: 'next',
-          imageUrl: `${process.env.NEXT_PUBLIC_URL}/game-board.png`,
-          button: {
-            title: 'Play Again',
-            action: {
-              type: 'launch_frame',
-              name: 'POD Play',
-              url: `${process.env.NEXT_PUBLIC_URL}/game`,
-              splashImageUrl: `${process.env.NEXT_PUBLIC_URL}/splash.png`,
-              splashBackgroundColor: '#000000'
-            }
-          }
-        })} />
-      </Head>
-      <main className="h-[100svh] bg-black text-white overflow-hidden">
-        <TicTacToe3D 
-          key={key}
-          onRestart={handleRestart}
-          onBackToMenu={handleBackToMenu}
-          difficulty={difficulty}
-          piece={piece}
-          isMuted={isMuted}
-          toggleMute={toggleMute}
-          farcasterUser={farcasterContext?.user} onGameOver={function (score: number): void {
-            throw new Error('Function not implemented.')
-          } }        />
-      </main>
-    </>
+    <main className="h-[100svh] bg-black text-white overflow-hidden">
+      <TicTacToe3D 
+        key={key}
+        onRestart={handleRestart}
+        onBackToMenu={handleBackToMenu}
+        onGameOver={handleGameOver}
+        difficulty={difficulty}
+        piece={piece}
+        isMuted={isMuted}
+        toggleMute={toggleMute}
+        farcasterUser={farcasterContext?.user}
+      />
+    </main>
   )
 }
 
 declare global {
   interface Window {
     sdk: {
-      events: any
+      events: any;
       actions: {
         ready: () => Promise<void>;
         setPrimaryButton: (options: {
