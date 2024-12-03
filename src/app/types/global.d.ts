@@ -13,12 +13,10 @@ declare global {
         }) => Promise<void>;
         openUrl: (options: {
           url: string;
-          close?: boolean;
+          close: boolean;
         }) => Promise<void>;
+        showToast: (options: any) => Promise<void>;
         close: () => Promise<void>;
-      };
-      context: {
-        user: any;
       };
     };
   }
