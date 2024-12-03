@@ -13,6 +13,23 @@ export default function Game() {
   const [isMuted, setIsMuted] = useState(false)
   const router = useRouter()
 
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const difficultyFromURL = searchParams.get('difficulty') as 'easy' | 'medium' | 'hard';
+    const pieceFromURL = searchParams.get('piece') as 'chili' | 'scarygary' | 'podplaylogo';
+    const mutedFromURL = searchParams.get('muted');
+    
+    if (difficultyFromURL) {
+      setDifficulty(difficultyFromURL);
+    }
+    if (pieceFromURL) {
+      setPiece(pieceFromURL);
+    }
+    if (mutedFromURL) {
+      setIsMuted(mutedFromURL === 'true');
+    }
+  }, []);
+
   const handleRestart = () => {
     setKey(prevKey => prevKey + 1)
   }
@@ -21,7 +38,11 @@ export default function Game() {
     router.push('/howtoplay')
   }
 
-  const toggleMute = () => setIsMuted(!isMuted)
+  const toggleMute = () => {
+    setIsMuted(prev => !prev)
+  }
+
+  console.log('Piece set in Game component:', piece);
 
   return (
     <main className="h-[100svh] bg-black text-white overflow-hidden">
