@@ -7,11 +7,8 @@ export async function GET(req: NextRequest) {
     button: {
       title: 'Start Game',
       action: {
-        type: 'launch_frame',
-        name: 'POD Play',
-        url: `${process.env.NEXT_PUBLIC_URL}/api/frame`,
-        splashImageUrl: `${process.env.NEXT_PUBLIC_URL}/splash.png`,
-        splashBackgroundColor: '#9333ea'
+        type: 'post',
+        url: `${process.env.NEXT_PUBLIC_URL}/api/frame`
       }
     }
   }
@@ -25,10 +22,6 @@ export async function GET(req: NextRequest) {
         <meta property="og:image" content="${frameEmbed.imageUrl}" />
         <meta property="og:title" content="POD Play Tic-Tac-Toe" />
       </head>
-      <body>
-        <h1>POD Play Tic-Tac-Toe</h1>
-        <p>This is a Farcaster Frame game. View it on Warpcast to play!</p>
-      </body>
     </html>`,
     {
       headers: {
@@ -59,15 +52,13 @@ export async function POST(req: NextRequest) {
   const frameEmbed = {
     version: 'vNext',
     imageUrl: `${process.env.NEXT_PUBLIC_URL}/game-board.png`,
-    buttons: [
-      {
-        title: 'Play Again',
-        action: {
-          type: 'post',
-          url: `${process.env.NEXT_PUBLIC_URL}/api/frame`
-        }
+    button: {
+      title: 'Play Game',
+      action: {
+        type: 'post',
+        url: `${process.env.NEXT_PUBLIC_URL}/api/frame`
       }
-    ]
+    }
   }
 
   return new Response(
@@ -79,10 +70,6 @@ export async function POST(req: NextRequest) {
         <meta property="og:title" content="POD Play Tic-Tac-Toe" />
         <meta property="og:image" content="${frameEmbed.imageUrl}" />
       </head>
-      <body>
-        <h1>POD Play Tic-Tac-Toe</h1>
-        <p>This is a Farcaster Frame game. View it on Warpcast to play!</p>
-      </body>
     </html>`,
     {
       headers: {
