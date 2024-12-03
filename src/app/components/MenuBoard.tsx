@@ -264,22 +264,22 @@ export default function MenuBoard({ onStartGame, onGoBack, isMuted, toggleMute }
   return (
     <div className="h-[100svh] w-full bg-black flex items-center justify-center p-4">
       <div className="w-full max-w-md aspect-[3/4] bg-white rounded-lg p-1">
-        <div className="w-full h-full bg-orange-600 rounded-lg overflow-hidden flex flex-col relative">
-          <div className="bg-orange-700 py-2">
+        <div className="w-full h-full bg-purple-600 rounded-lg overflow-hidden flex flex-col relative">
+          <div className="bg-purple-700 py-2">
             <h1 className="text-2xl sm:text-3xl font-bold text-center text-white" style={{ fontFamily: 'Frijole, cursive', textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
               Main Menu
             </h1>
           </div>
           <div className="flex-grow relative">
             <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
-              <color attach="background" args={['#f97316']} />
+              <color attach="background" args={['#9333ea']} />
               <ambientLight intensity={0.3} />
-              <pointLight position={[10, 10, 10]} color="#ff6600" intensity={0.8} />
+              <pointLight position={[10, 10, 10]} color="#9333ea" intensity={0.8} />
               <MenuText onStartGame={onStartGame} isMuted={isMuted} toggleMute={toggleMute} setMenuStep={setMenuStep} menuStep={menuStep} playHalloweenMusic={playHalloweenMusic} stopHalloweenMusic={stopHalloweenMusic} />
             </Canvas>
           </div>
-          <div className="flex justify-between items-center py-3 px-4 bg-orange-700">
-            <button onClick={handleBackButton} className="bg-orange-800 text-white px-4 py-2 rounded text-sm sm:text-base hover:bg-red-900 transition-colors text-shadow-custom">
+          <div className="flex justify-between items-center py-3 px-4 bg-purple-700">
+            <button onClick={handleBackButton} className="bg-purple-800 text-white px-4 py-2 rounded text-sm sm:text-base hover:bg-purple-900 transition-colors text-shadow-custom">
               Go Back
             </button>
             <button 

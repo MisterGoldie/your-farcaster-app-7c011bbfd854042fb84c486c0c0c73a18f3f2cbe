@@ -7,8 +7,8 @@ export default function Home() {
   return (
     <div className="h-[100svh] w-full bg-black flex items-center justify-center p-4">
       <div className="w-full max-w-md aspect-[3/4] bg-white rounded-lg p-1">
-        <div className="w-full h-full bg-orange-600 rounded-lg overflow-hidden flex flex-col relative">
-          <div className="bg-orange-700 py-2">
+        <div className="w-full h-full bg-purple-600 rounded-lg overflow-hidden flex flex-col relative">
+          <div className="bg-purple-700 py-2">
             <h1 className="text-2xl sm:text-3xl font-bold text-center text-white" style={{ fontFamily: 'Frijole, cursive', textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
               POD Play 🕹️
             </h1>
@@ -26,7 +26,7 @@ export default function Home() {
             
             <Link 
               href="/howtoplay" 
-              className="bg-orange-800 text-white px-6 py-3 rounded text-lg sm:text-xl hover:bg-red-900 transition-colors text-shadow-custom"
+              className="bg-purple-800 text-white px-6 py-3 rounded text-lg sm:text-xl hover:bg-purple-900 transition-colors text-shadow-custom"
             >
               Enter
             </Link>
