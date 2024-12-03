@@ -1,18 +1,15 @@
 import { NextRequest } from 'next/server'
 
 export async function GET(req: NextRequest) {
-  const frameEmbed = {
-    version: 'vNext',
-    imageUrl: `${process.env.NEXT_PUBLIC_URL}/game-preview.png`,
-    button: {
-      title: 'Start Game',
-      action: {
-        type: 'post',
-        url: `${process.env.NEXT_PUBLIC_URL}/api/frame`,
-        splashImageUrl: `${process.env.NEXT_PUBLIC_URL}/splash.png`,
-        splashBackgroundColor: '#9333ea'
+  const frameMetadata = {
+    buttons: [
+      {
+        label: "Start Game",
+        action: "post"
       }
-    }
+    ],
+    image: `${process.env.NEXT_PUBLIC_URL}/game-preview.png`,
+    post_url: `${process.env.NEXT_PUBLIC_URL}/api/frame`
   }
 
   return new Response(
@@ -20,9 +17,11 @@ export async function GET(req: NextRequest) {
     <html>
       <head>
         <title>POD Play Tic-Tac-Toe</title>
-        <meta property="fc:frame" content="${JSON.stringify(frameEmbed)}" />
-        <meta property="og:image" content="${frameEmbed.imageUrl}" />
-        <meta property="og:title" content="POD Play Tic-Tac-Toe" />
+        <meta property="fc:frame" content="vNext" />
+        <meta property="fc:frame:image" content="${frameMetadata.image}" />
+        <meta property="fc:frame:button:1" content="${frameMetadata.buttons[0].label}" />
+        <meta property="fc:frame:button:1:action" content="${frameMetadata.buttons[0].action}" />
+        <meta property="fc:frame:post_url" content="${frameMetadata.post_url}" />
       </head>
     </html>`,
     {
@@ -33,34 +32,16 @@ export async function GET(req: NextRequest) {
   )
 }
 
-interface FrameRequest {
-  untrustedData: {
-    buttonIndex: number;
-    fid: number;
-    url: string;
-    messageHash: string;
-    timestamp: number;
-  };
-  trustedData?: {
-    messageBytes: string;
-  };
-}
-
 export async function POST(req: NextRequest) {
-  const data: FrameRequest = await req.json()
-  const { untrustedData } = data
-  const { buttonIndex, fid } = untrustedData
-
-  const frameEmbed = {
-    version: 'vNext',
-    imageUrl: `${process.env.NEXT_PUBLIC_URL}/game-board.png`,
-    button: {
-      title: 'Play Game',
-      action: {
-        type: 'post',
-        url: `${process.env.NEXT_PUBLIC_URL}/api/frame`
+  const frameMetadata = {
+    buttons: [
+      {
+        label: "Play Again",
+        action: "post"
       }
-    }
+    ],
+    image: `${process.env.NEXT_PUBLIC_URL}/game-board.png`,
+    post_url: `${process.env.NEXT_PUBLIC_URL}/api/frame`
   }
 
   return new Response(
@@ -68,9 +49,11 @@ export async function POST(req: NextRequest) {
     <html>
       <head>
         <title>POD Play Tic-Tac-Toe</title>
-        <meta property="fc:frame" content="${JSON.stringify(frameEmbed)}" />
-        <meta property="og:title" content="POD Play Tic-Tac-Toe" />
-        <meta property="og:image" content="${frameEmbed.imageUrl}" />
+        <meta property="fc:frame" content="vNext" />
+        <meta property="fc:frame:image" content="${frameMetadata.image}" />
+        <meta property="fc:frame:button:1" content="${frameMetadata.buttons[0].label}" />
+        <meta property="fc:frame:button:1:action" content="${frameMetadata.buttons[0].action}" />
+        <meta property="fc:frame:post_url" content="${frameMetadata.post_url}" />
       </head>
     </html>`,
     {
