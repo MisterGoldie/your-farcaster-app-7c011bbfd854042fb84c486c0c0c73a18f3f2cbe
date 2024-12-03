@@ -14,7 +14,16 @@ const nextConfig = {
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; connect-src 'self' https://* wss://ws-us3.pusher.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live https://cdnjs.cloudflare.com https://cdn.warpcast.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://vercel.live; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: https://*.ipfs.w3s.link; frame-src 'self' https://vercel.live https://*.farcaster.xyz https://*.warpcast.com;"
+            value: [
+              "default-src 'self'",
+              "connect-src 'self' https://* wss://*",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live https://cdnjs.cloudflare.com https://cdn.farcaster.xyz https://cdn.warpcast.com blob:",
+              "worker-src 'self' blob:",
+              "style-src 'self' 'unsafe-inline'",
+              "font-src 'self' https://fonts.gstatic.com",
+              "img-src 'self' data: https: https://*.ipfs.w3s.link",
+              "frame-src 'self' https://vercel.live https://*.farcaster.xyz https://*.warpcast.com"
+            ].join('; ')
           }
         ],
       },

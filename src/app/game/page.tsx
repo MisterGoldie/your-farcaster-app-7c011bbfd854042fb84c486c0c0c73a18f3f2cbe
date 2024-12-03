@@ -42,6 +42,11 @@ export default function Game() {
     setIsMuted(prev => !prev)
   }
 
+  const handleGameOver = () => {
+    // Add this empty function to prevent crashes
+    // We can implement game over logic here later if needed
+  }
+
   console.log('Piece set in Game component:', piece);
 
   return (
@@ -50,12 +55,12 @@ export default function Game() {
         key={key}
         onRestart={handleRestart}
         onBackToMenu={handleBackToMenu}
+        onGameOver={handleGameOver}
         difficulty={difficulty}
         piece={piece}
         isMuted={isMuted}
-        toggleMute={toggleMute} onGameOver={function (score: number): void {
-          throw new Error('Function not implemented.')
-        } }      />
+        toggleMute={toggleMute}
+      />
     </main>
   )
 }
