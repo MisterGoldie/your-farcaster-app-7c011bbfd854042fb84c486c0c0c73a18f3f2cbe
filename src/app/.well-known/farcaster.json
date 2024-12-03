@@ -6,9 +6,9 @@
   },
   "frame": {
     "image": {
-      "aspectRatio": "1:1",
-      "maxWidth": 1000,
-      "maxHeight": 1000
+      "aspectRatio": "1.91:1",
+      "maxWidth": 1200,
+      "maxHeight": 628
     },
     "buttons": {
       "maxCount": 4
@@ -16,7 +16,7 @@
     "inputText": {
       "maxLength": 256
     },
-    "postUrl": "https://your-domain.com/api/frame"
+    "postUrl": "https://v2frametest.vercel.app/api/frame"
   },
   "triggers": [
     {

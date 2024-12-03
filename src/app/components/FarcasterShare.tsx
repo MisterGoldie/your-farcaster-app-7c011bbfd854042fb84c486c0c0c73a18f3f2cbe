@@ -1,4 +1,3 @@
-import { useAuthContext } from '../context/AuthContext'
 import Link from 'next/link'
 import { ReactNode } from 'react'
 
@@ -57,3 +56,7 @@ export default function FarcasterShare({ message, embeds, customClass, children 
         </>
     )
 }
+function useAuthContext(): { isMini: any } {
+    throw new Error('Function not implemented.')
+}
+
