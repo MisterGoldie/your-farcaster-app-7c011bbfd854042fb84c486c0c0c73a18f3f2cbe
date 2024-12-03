@@ -20,8 +20,16 @@
   },
   "triggers": [
     {
-      "type": "frame_action",
-      "endpoint": "/api/frame"
+      "type": "cast",
+      "id": "play-game",
+      "url": "${process.env.NEXT_PUBLIC_URL}/api/frame",
+      "name": "Play Tic-Tac-Toe"
+    },
+    {
+      "type": "composer",
+      "id": "share-game",
+      "url": "${process.env.NEXT_PUBLIC_URL}/api/composer",
+      "name": "Share Game"
     }
   ]
 } 

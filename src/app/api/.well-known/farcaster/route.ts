@@ -9,23 +9,24 @@ export async function GET() {
     },
     frame: {
       version: "0.0.0",
-      name: "Your App Name",
+      name: "POD Play Tic-Tac-Toe",
       homeUrl: `${process.env.NEXT_PUBLIC_URL}`,
       iconUrl: `${process.env.NEXT_PUBLIC_URL}/icon.png`,
       splashImageUrl: `${process.env.NEXT_PUBLIC_URL}/splash.png`,
-      splashBackgroundColor: "#ffffff",
-      webhookUrl: `${process.env.NEXT_PUBLIC_URL}/api/notifications`
+      splashBackgroundColor: "#9333ea"
     },
     triggers: [
       {
         type: 'cast',
-        id: 'default-action',
-        url: `${process.env.NEXT_PUBLIC_URL}/api/frame`
+        id: 'play-game',
+        url: `${process.env.NEXT_PUBLIC_URL}/api/frame`,
+        name: 'Play Tic-Tac-Toe'
       },
       {
         type: 'composer',
-        id: 'compose-action',
-        url: `${process.env.NEXT_PUBLIC_URL}/api/composer`
+        id: 'share-game',
+        url: `${process.env.NEXT_PUBLIC_URL}/api/composer`,
+        name: 'Share Game'
       }
     ]
   }
