@@ -1,6 +1,25 @@
 import { NextRequest } from 'next/server'
 import { validateWithNeynar } from '@/app/helpers/frames'
 
+export const metadata = {
+  other: {
+    'fc:frame': JSON.stringify({
+      version: 'vNext',
+      image: {
+        src: `${process.env.NEXT_PUBLIC_URL}/game-board.png`,
+        aspectRatio: '1.91:1'
+      },
+      buttons: [
+        {
+          label: "Play POD Play",
+          action: "post",
+          target: `${process.env.NEXT_PUBLIC_URL}/api/frame`
+        }
+      ]
+    })
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
@@ -19,14 +38,8 @@ export async function POST(req: NextRequest) {
           <meta property="fc:frame" content="vNext" />
           <meta property="fc:frame:image" content="${process.env.NEXT_PUBLIC_URL}/menu-board.png" />
           <meta property="fc:frame:image:aspect_ratio" content="3:4" />
-          <meta property="fc:frame:button:1" content="Easy" />
-          <meta property="fc:frame:button:2" content="Medium" />
-          <meta property="fc:frame:button:3" content="Hard" />
-          <meta property="fc:frame:button:4" content="Back" />
+          <meta property="fc:frame:button:1" content="Select Game" />
           <meta property="fc:frame:button:1:action" content="post" />
-          <meta property="fc:frame:button:2:action" content="post" />
-          <meta property="fc:frame:button:3:action" content="post" />
-          <meta property="fc:frame:button:4:action" content="post" />
         </head>
       </html>`,
       {
