@@ -1,29 +1,6 @@
 import { NextRequest } from 'next/server'
 import { validateWithNeynar } from '@/app/helpers/frames'
 
-export async function GET(req: NextRequest) {
-  return new Response(
-    `<!DOCTYPE html>
-    <html>
-      <head>
-        <title>POD Play</title>
-        <meta property="fc:frame" content="vNext" />
-        <meta property="fc:frame:image" content="${process.env.NEXT_PUBLIC_URL}/game-preview.png" />
-        <meta property="fc:frame:image:aspect_ratio" content="1.91:1" />
-        <meta property="fc:frame:button:1" content="Play POD Play" />
-        <meta property="fc:frame:button:1:action" content="post" />
-        <meta property="fc:frame:post_url" content="${process.env.NEXT_PUBLIC_URL}/api/frame" />
-        <meta property="fc:frame:button:1:action_type" content="primary" />
-      </head>
-    </html>`,
-    {
-      headers: {
-        'Content-Type': 'text/html',
-      },
-    }
-  )
-}
-
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
@@ -40,12 +17,16 @@ export async function POST(req: NextRequest) {
         <head>
           <title>POD Play</title>
           <meta property="fc:frame" content="vNext" />
-          <meta property="fc:frame:image" content="${process.env.NEXT_PUBLIC_URL}/game-board.png" />
-          <meta property="fc:frame:image:aspect_ratio" content="1.91:1" />
-          <meta property="fc:frame:button:1" content="Start Game" />
-          <meta property="fc:frame:button:1:action" content="post_redirect" />
-          <meta property="fc:frame:button:1:target" content="${process.env.NEXT_PUBLIC_URL}/" />
-          <meta property="fc:frame:button:1:action_type" content="primary" />
+          <meta property="fc:frame:image" content="${process.env.NEXT_PUBLIC_URL}/menu-board.png" />
+          <meta property="fc:frame:image:aspect_ratio" content="3:4" />
+          <meta property="fc:frame:button:1" content="Easy" />
+          <meta property="fc:frame:button:2" content="Medium" />
+          <meta property="fc:frame:button:3" content="Hard" />
+          <meta property="fc:frame:button:4" content="Back" />
+          <meta property="fc:frame:button:1:action" content="post" />
+          <meta property="fc:frame:button:2:action" content="post" />
+          <meta property="fc:frame:button:3:action" content="post" />
+          <meta property="fc:frame:button:4:action" content="post" />
         </head>
       </html>`,
       {
