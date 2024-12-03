@@ -4,7 +4,6 @@ interface FrameState {
   difficulty?: 'easy' | 'medium' | 'hard'
   piece?: 'chili' | 'scarygary' | 'podplaylogo'
   gameStarted: boolean
-  score?: number
 }
 
 // In-memory state store (consider using Redis/DB for production)

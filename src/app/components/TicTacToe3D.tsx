@@ -88,7 +88,7 @@ interface BoardProps {
   isMuted: boolean;
   toggleMute: () => void;
   onRestart: () => void;
-  onGameOver: (score: number) => void;
+  onGameOver: () => void;
 }
 
 function Board({ difficulty, piece, isMuted, toggleMute, onRestart, onGameOver }: BoardProps) {
@@ -170,10 +170,6 @@ function Board({ difficulty, piece, isMuted, toggleMute, onRestart, onGameOver }
       stopCountdownSound();
       const winner = checkWinner(board);
       
-      // Calculate and report score
-      const finalScore = calculateScore(winner, timeLeft, difficulty);
-      onGameOver(finalScore);
-
       if (winner === 'X') {
         playLoseSound();
       } else if (winner === 'O') {
@@ -342,24 +338,6 @@ function Board({ difficulty, piece, isMuted, toggleMute, onRestart, onGameOver }
     return -1; // No winning move found
   }
 
-  const calculateScore = (winner: string | null, timeLeft: number, difficulty: string) => {
-    if (winner === 'O') { // Player wins
-      const difficultyMultiplier = {
-        'easy': 1,
-        'medium': 2,
-        'hard': 3
-      }[difficulty] || 1;
-      
-      return Math.round(1000 + (timeLeft * 50) * difficultyMultiplier);
-    }
-    
-    if (winner === null && board.every(Boolean)) { // Draw
-      return 500;
-    }
-    
-    return 0; // Loss
-  }
-
   const winner = checkWinner(board)
   const isDraw = !winner && board.every(Boolean)
 
@@ -449,11 +427,9 @@ export default function TicTacToe3D({
   toggleMute 
 }: TicTacToe3DProps) {
   const [backgroundColor, setBackgroundColor] = useState(backgroundColors[0])
-  const [currentScore, setCurrentScore] = useState(0)
   const [playClick] = useSound('/sounds/click.mp3', { volume: 0.5, soundEnabled: !isMuted });
 
-  const handleGameOver = (score: number) => {
-    setCurrentScore(score);
+  const handleGameOver = () => {
     onGameOver();
   }
 
@@ -471,11 +447,6 @@ export default function TicTacToe3D({
             <h1 className="text-2xl sm:text-3xl font-bold text-center text-white" style={{ fontFamily: 'Frijole, cursive', textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
               TIC-TAC-MAXI
             </h1>
-            {currentScore > 0 && (
-              <p className="text-lg text-center text-white mt-1">
-                Score: {currentScore}
-              </p>
-            )}
           </div>
           <div className="flex-grow relative">
             <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
