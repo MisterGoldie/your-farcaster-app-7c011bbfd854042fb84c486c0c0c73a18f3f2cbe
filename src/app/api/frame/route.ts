@@ -1,26 +1,39 @@
 import { NextRequest } from 'next/server'
 import { validateWithNeynar } from '@/app/helpers/frames'
+import puppeteer from 'puppeteer'
 
 export async function GET() {
-  return new Response(
-    `<!DOCTYPE html>
-    <html>
-      <head>
-        <title>POD Play</title>
-        <meta property="fc:frame" content="vNext" />
-        <meta property="og:title" content="POD Play" />
-        <meta property="og:description" content="Play Tic-Tac-Toe" />
-        <meta property="fc:frame:image" content="${process.env.NEXT_PUBLIC_URL}/howtoplay" />
-        <meta property="fc:frame:button:1" content="Select Game" />
-        <meta property="fc:frame:button:1:action" content="post" />
-      </head>
-    </html>`,
-    {
-      headers: {
-        'Content-Type': 'text/html',
-      },
-    }
-  )
+  try {
+    const browser = await puppeteer.launch()
+    const page = await browser.newPage()
+    await page.setViewport({ width: 600, height: 800 })
+    
+    await page.goto(`${process.env.NEXT_PUBLIC_URL}/howtoplay`, { waitUntil: 'networkidle0' })
+    const screenshot = await page.screenshot({ encoding: 'base64' })
+    
+    await browser.close()
+
+    return new Response(
+      `<!DOCTYPE html>
+      <html>
+        <head>
+          <title>POD Play</title>
+          <meta property="fc:frame" content="vNext" />
+          <meta property="fc:frame:image" content="data:image/png;base64,${screenshot}" />
+          <meta property="fc:frame:button:1" content="Select Game" />
+          <meta property="fc:frame:button:1:action" content="post" />
+        </head>
+      </html>`,
+      {
+        headers: {
+          'Content-Type': 'text/html',
+        },
+      }
+    )
+  } catch (error) {
+    console.error('Error generating frame:', error)
+    return new Response('Error generating frame', { status: 500 })
+  }
 }
 
 export async function POST(req: NextRequest) {
@@ -33,15 +46,22 @@ export async function POST(req: NextRequest) {
       return new Response('Invalid frame message', { status: 400 })
     }
 
+    const browser = await puppeteer.launch()
+    const page = await browser.newPage()
+    await page.setViewport({ width: 600, height: 800 })
+    
+    await page.goto(`${process.env.NEXT_PUBLIC_URL}/howtoplay`, { waitUntil: 'networkidle0' })
+    const screenshot = await page.screenshot({ encoding: 'base64' })
+    
+    await browser.close()
+
     return new Response(
       `<!DOCTYPE html>
       <html>
         <head>
           <title>POD Play</title>
           <meta property="fc:frame" content="vNext" />
-          <meta property="og:title" content="POD Play" />
-          <meta property="og:description" content="Play Tic-Tac-Toe" />
-          <meta property="fc:frame:image" content="${process.env.NEXT_PUBLIC_URL}/howtoplay" />
+          <meta property="fc:frame:image" content="data:image/png;base64,${screenshot}" />
           <meta property="fc:frame:button:1" content="Easy" />
           <meta property="fc:frame:button:2" content="Medium" />
           <meta property="fc:frame:button:3" content="Hard" />
