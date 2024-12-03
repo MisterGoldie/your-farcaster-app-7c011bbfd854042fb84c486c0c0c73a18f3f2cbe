@@ -9,7 +9,7 @@ export async function GET() {
         <title>POD Play</title>
         <meta property="fc:frame" content="vNext" />
         <meta property="fc:frame:image" content="${process.env.NEXT_PUBLIC_URL}/api/frame/render" />
-        <meta property="fc:frame:button:1" content="Select Game" />
+        <meta property="fc:frame:button:1" content="Play Game" />
         <meta property="fc:frame:button:1:action" content="post" />
       </head>
     </html>`,
@@ -24,11 +24,12 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    const { trustedData } = body
-    
-    const validationResult = await validateWithNeynar(trustedData.messageBytes)
-    if (!validationResult.valid) {
-      return new Response('Invalid frame message', { status: 400 })
+    const { untrustedData } = body
+    const buttonIndex = untrustedData?.buttonIndex || 1
+
+    let state = 'menu'
+    if (buttonIndex === 1) {
+      state = 'difficulty'
     }
 
     return new Response(
@@ -37,7 +38,7 @@ export async function POST(req: NextRequest) {
         <head>
           <title>POD Play</title>
           <meta property="fc:frame" content="vNext" />
-          <meta property="fc:frame:image" content="${process.env.NEXT_PUBLIC_URL}/api/frame/render?state=difficulty" />
+          <meta property="fc:frame:image" content="${process.env.NEXT_PUBLIC_URL}/api/frame/render?state=${state}" />
           <meta property="fc:frame:button:1" content="Easy" />
           <meta property="fc:frame:button:2" content="Medium" />
           <meta property="fc:frame:button:3" content="Hard" />
