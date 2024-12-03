@@ -109,9 +109,6 @@ export default function FrameGameWrapper({ initialGameState }: FrameGameWrapperP
       draw: "It's a draw!"
     };
 
-    if (window.sdk.actions.showToast) {
-      await window.sdk.actions.showToast(messages[result]);
-    }
     await window.sdk.actions.close();
   }
 
