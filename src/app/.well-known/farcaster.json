@@ -1,0 +1,31 @@
+{
+  "accountAssociation": {
+    "header": "",
+    "payload": "",
+    "signature": ""
+  },
+  "frame": {
+    "image": {
+      "aspectRatio": "1:1",
+      "maxWidth": 1000,
+      "maxHeight": 1000
+    },
+    "buttons": {
+      "maxCount": 4
+    },
+    "inputText": {
+      "maxLength": 256
+    },
+    "postUrl": "https://your-domain.com/api/frame"
+  },
+  "triggers": [
+    {
+      "type": "frame_action",
+      "endpoint": "/api/frame"
+    },
+    {
+      "type": "cast_composer",
+      "endpoint": "/api/composer"
+    }
+  ]
+} 

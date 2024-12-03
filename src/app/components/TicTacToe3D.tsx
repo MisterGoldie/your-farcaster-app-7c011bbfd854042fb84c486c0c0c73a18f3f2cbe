@@ -82,13 +82,16 @@ function ChiliSprite({ position }: { position: [number, number, number] }) {
   )
 }
 
-function Board({ difficulty, piece, isMuted, toggleMute, onRestart }: {
-  difficulty: 'easy' | 'medium' | 'hard',
-  piece: 'chili' | 'scarygary' | 'podplaylogo',
-  isMuted: boolean,
-  toggleMute: () => void,
-  onRestart: () => void
-}) {
+interface BoardProps {
+  difficulty: 'easy' | 'medium' | 'hard';
+  piece: 'chili' | 'scarygary' | 'podplaylogo';
+  isMuted: boolean;
+  toggleMute: () => void;
+  onRestart: () => void;
+  onGameOver: (score: number) => void;
+}
+
+function Board({ difficulty, piece, isMuted, toggleMute, onRestart, onGameOver }: BoardProps) {
   const boardRef = useRef<THREE.Group>(null)
   const [board, setBoard] = useState<(string | null)[]>(Array(9).fill(null))
   const [isONext, setIsONext] = useState(false)
@@ -166,6 +169,11 @@ function Board({ difficulty, piece, isMuted, toggleMute, onRestart }: {
       setJingleStarted(false);
       stopCountdownSound();
       const winner = checkWinner(board);
+      
+      // Calculate and report score
+      const finalScore = calculateScore(winner, timeLeft, difficulty);
+      onGameOver(finalScore);
+
       if (winner === 'X') {
         playLoseSound();
       } else if (winner === 'O') {
@@ -334,6 +342,24 @@ function Board({ difficulty, piece, isMuted, toggleMute, onRestart }: {
     return -1; // No winning move found
   }
 
+  const calculateScore = (winner: string | null, timeLeft: number, difficulty: string) => {
+    if (winner === 'O') { // Player wins
+      const difficultyMultiplier = {
+        'easy': 1,
+        'medium': 2,
+        'hard': 3
+      }[difficulty] || 1;
+      
+      return Math.round(1000 + (timeLeft * 50) * difficultyMultiplier);
+    }
+    
+    if (winner === null && board.every(Boolean)) { // Draw
+      return 500;
+    }
+    
+    return 0; // Loss
+  }
+
   const winner = checkWinner(board)
   const isDraw = !winner && board.every(Boolean)
 
@@ -403,30 +429,42 @@ const backgroundColors = [
   '#C840B1', // Purple
 ]
 
-export default function TicTacToe3D({ onRestart, onBackToMenu, difficulty, piece, isMuted, toggleMute }: { 
-  onRestart: () => void, 
-  onBackToMenu: () => void,
-  difficulty: 'easy' | 'medium' | 'hard',
-  piece: 'chili' | 'scarygary' | 'podplaylogo',
-  isMuted: boolean,
-  toggleMute: () => void
-}) {
+interface TicTacToe3DProps {
+  onRestart: () => void;
+  onBackToMenu: () => void;
+  onGameOver: (score: number) => void;
+  difficulty: 'easy' | 'medium' | 'hard';
+  piece: 'chili' | 'scarygary' | 'podplaylogo';
+  isMuted: boolean;
+  toggleMute: () => void;
+  farcasterUser?: {
+    fid: number;
+    username?: string;
+    displayName?: string;
+  };
+}
+
+export default function TicTacToe3D({ 
+  farcasterUser, 
+  onRestart, 
+  onBackToMenu, 
+  onGameOver,
+  difficulty, 
+  piece, 
+  isMuted, 
+  toggleMute 
+}: TicTacToe3DProps) {
   const [backgroundColor, setBackgroundColor] = useState(backgroundColors[0])
+  const [currentScore, setCurrentScore] = useState(0)
   const [playClick] = useSound('/sounds/click.mp3', { volume: 0.5, soundEnabled: !isMuted });
 
-  const changeBackgroundColor = () => {
-    const newColor = backgroundColors[Math.floor(Math.random() * backgroundColors.length)]
-    setBackgroundColor(newColor)
+  const handleGameOver = (score: number) => {
+    setCurrentScore(score);
+    onGameOver(score);
   }
 
-  useEffect(() => {
-    changeBackgroundColor()
-  }, [])
-
-  const handleRestart = () => {
-    changeBackgroundColor()
-    playClick()
-    onRestart()
+  function handleRestart(): void {
+    throw new Error('Function not implemented.');
   }
 
   return (
@@ -437,6 +475,11 @@ export default function TicTacToe3D({ onRestart, onBackToMenu, difficulty, piece
             <h1 className="text-2xl sm:text-3xl font-bold text-center text-white" style={{ fontFamily: 'Frijole, cursive', textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
               TIC-TAC-MAXI
             </h1>
+            {currentScore > 0 && (
+              <p className="text-lg text-center text-white mt-1">
+                Score: {currentScore}
+              </p>
+            )}
           </div>
           <div className="flex-grow relative">
             <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
@@ -444,7 +487,14 @@ export default function TicTacToe3D({ onRestart, onBackToMenu, difficulty, piece
               <ambientLight intensity={0.3} />
               <pointLight position={[10, 10, 10]} color="#9333ea" intensity={0.8} />
               <React.Suspense fallback={null}>
-                <Board difficulty={difficulty} piece={piece} isMuted={isMuted} toggleMute={toggleMute} onRestart={handleRestart} />
+                <Board 
+                  difficulty={difficulty} 
+                  piece={piece} 
+                  isMuted={isMuted} 
+                  toggleMute={toggleMute} 
+                  onRestart={handleRestart}
+                  onGameOver={handleGameOver}
+                />
               </React.Suspense>
             </Canvas>
           </div>
