@@ -2,14 +2,14 @@ import { NextRequest } from 'next/server'
 
 export async function GET(req: NextRequest) {
   const frameEmbed = {
-    version: 'next',
+    version: 'vNext',
     imageUrl: `${process.env.NEXT_PUBLIC_URL}/game-preview.png`,
     button: {
       title: 'Start Game',
       action: {
         type: 'launch_frame',
         name: 'POD Play',
-        url: `${process.env.NEXT_PUBLIC_URL}/game`,
+        url: `${process.env.NEXT_PUBLIC_URL}/api/frame`,
         splashImageUrl: `${process.env.NEXT_PUBLIC_URL}/splash.png`,
         splashBackgroundColor: '#9333ea'
       }
@@ -57,22 +57,14 @@ export async function POST(req: NextRequest) {
   const { buttonIndex, fid } = untrustedData
 
   const frameEmbed = {
-    version: 'next',
+    version: 'vNext',
     imageUrl: `${process.env.NEXT_PUBLIC_URL}/game-board.png`,
     buttons: [
       {
         title: 'Play Again',
         action: {
-          type: 'launch_frame',
-          url: `${process.env.NEXT_PUBLIC_URL}/game`,
-          name: 'POD Play'
-        }
-      },
-      {
-        title: 'Share Score',
-        action: {
-          type: 'link',
-          url: `${process.env.NEXT_PUBLIC_URL}/share/${fid}`
+          type: 'post',
+          url: `${process.env.NEXT_PUBLIC_URL}/api/frame`
         }
       }
     ]
