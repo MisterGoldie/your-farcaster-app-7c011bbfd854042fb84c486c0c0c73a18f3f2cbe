@@ -61,29 +61,3 @@ export default function Game() {
     </div>
   )
 }
-
-declare global {
-  interface Window {
-    sdk: {
-      events: {
-        on: (event: string, callback: () => void) => void;
-        off: (event: string, callback: () => void) => void;
-      };
-      actions: {
-        showToast: any
-        openUrl(arg0: { url: string; close: boolean }): unknown
-        ready: () => Promise<void>;
-        setPrimaryButton: (options: {
-          text: string;
-          enabled: boolean;
-        }) => Promise<void>;
-        close: () => Promise<void>;
-      };
-      context: {
-        user: any;
-      };
-    };
-  }
-}
-
-/////

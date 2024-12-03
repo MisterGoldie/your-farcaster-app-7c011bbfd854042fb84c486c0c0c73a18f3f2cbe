@@ -1,6 +1,7 @@
 declare global {
   interface Window {
     sdk: {
+      context: any;
       events: {
         on: (event: string, callback: () => void) => void;
         off: (event: string, callback: () => void) => void;
