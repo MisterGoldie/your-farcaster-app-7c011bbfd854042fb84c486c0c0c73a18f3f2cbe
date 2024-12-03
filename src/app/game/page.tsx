@@ -73,6 +73,8 @@ declare global {
         off: (event: string, callback: () => void) => void;
       };
       actions: {
+        showToast: any
+        openUrl(arg0: { url: string; close: boolean }): unknown
         ready: () => Promise<void>;
         setPrimaryButton: (options: {
           text: string;

@@ -100,6 +100,46 @@ export default function FrameGameWrapper({ initialGameState }: FrameGameWrapperP
 
   const toggleMute = () => setIsMuted(!isMuted)
 
+  const handleGameEnd = async (result: 'win' | 'lose' | 'draw') => {
+    if (!window.sdk) return;
+    
+    const messages = {
+      win: "Congratulations! You won the game!",
+      lose: "Better luck next time!",
+      draw: "It's a draw!"
+    };
+
+    if (window.sdk.actions.showToast) {
+      await window.sdk.actions.showToast(messages[result]);
+    }
+    await window.sdk.actions.close();
+  }
+
+  const handleExternalLink = async (url: string) => {
+    if (!window.sdk) return;
+    
+    await window.sdk.actions.openUrl({
+      url,
+      close: false
+    });
+  }
+
+  useEffect(() => {
+    const initContext = async () => {
+      if (window.sdk?.context) {
+        const { user } = window.sdk.context;
+        console.log('User context:', user);
+        
+        // Use context to customize the game experience
+        if (user?.username) {
+          // Personalize the game for the user
+        }
+      }
+    };
+
+    initContext();
+  }, []);
+
   return (
     <div className="h-[100svh] w-full bg-black">
       {!gameStarted ? (
