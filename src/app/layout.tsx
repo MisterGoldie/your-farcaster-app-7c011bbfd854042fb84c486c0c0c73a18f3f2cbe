@@ -4,6 +4,22 @@ import { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'POD Play Tic-Tac-Toe',
   description: 'A Tic-Tac-Toe game presented by /thepod',
+  other: {
+    'fc:frame': JSON.stringify({
+      version: 'next',
+      imageUrl: `${process.env.NEXT_PUBLIC_URL}/game-board.png`,
+      button: {
+        title: "Play POD Play",
+        action: {
+          type: "launch_frame",
+          name: "POD Play",
+          url: `${process.env.NEXT_PUBLIC_URL}/api/frame`,
+          splashImageUrl: `${process.env.NEXT_PUBLIC_URL}/splash.png`,
+          splashBackgroundColor: "#9333ea"
+        }
+      }
+    })
+  }
 }
 
 export default function RootLayout({
@@ -18,7 +34,6 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Frijole&display=swap" rel="stylesheet" />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
       </head>
       <body className="bg-black flex items-center justify-center min-h-screen">
         <div className="w-full max-w-md px-4">
