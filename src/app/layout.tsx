@@ -2,8 +2,10 @@ import './globals.css'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'POD Play Tic-Tac-Toe',
-  description: 'A Tic-Tac-Toe game presented by /thepod',
+  title: 'POD Play',
+  description: 'Play POD Play Game',
+  viewport: 'width=device-width, initial-scale=1',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'),
   other: {
     'fc:frame': JSON.stringify({
       version: 'next',
@@ -30,7 +32,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Frijole&display=swap" rel="stylesheet" />
