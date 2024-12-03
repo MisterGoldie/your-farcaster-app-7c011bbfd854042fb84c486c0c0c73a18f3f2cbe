@@ -1,16 +1,16 @@
 {
   "accountAssociation": {
-    "header": "",
-    "payload": "",
-    "signature": ""
+    "header": "eyJmaWQiOjc0NzIsInR5cGUiOiJjdXN0b2R5Iiwia2V5IjoiMHgzRjE2ODZlNEI1Yjg2NjdEQzY1RTMzQzMxZDVBYTg2NzcxNzhGZDRBIn0",
+    "payload": "eyJkb21haW4iOiJodHRwczovL3YyZnJhbWV0ZXN0LnZlcmNlbC5hcHAifQ",
+    "signature": "MHg1MWJlNzk5ODlhZGNlM2ZiYTk2MGY0ZjU0ZGE0NzE2MDYyNDcwMWI1NGEyZTM3YjFlYzY1ZWVlZTA2Y2Q2NWE4NDljNTFlZWI2YmU0OWViNGQzZDdmN2E4OTUzMjIxZmQ5OGJlZmQyYmRkNWViMmVjNzdmYTQyNTAwMWI5MGQ2YTFj"
   },
   "frame": {
     "version": "0.0.0",
     "name": "Tic-Tac-Toe",
     "homeUrl": "${process.env.NEXT_PUBLIC_URL}",
-    "iconUrl": "YOUR_ICON_URL",
-    "splashImageUrl": "YOUR_SPLASH_URL",
-    "splashBackgroundColor": "#YOUR_COLOR",
+    "iconUrl": "${process.env.NEXT_PUBLIC_URL}/icon.png",
+    "splashImageUrl": "${process.env.NEXT_PUBLIC_URL}/splash.png",
+    "splashBackgroundColor": "#9333ea",
     "webhookUrl": "${process.env.NEXT_PUBLIC_URL}/api/frame"
   },
   "triggers": [
