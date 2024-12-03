@@ -1,29 +1,18 @@
 import { NextRequest } from 'next/server'
+import { validateWithNeynar } from '@/app/helpers/frames'
 
 export async function GET(req: NextRequest) {
-  const frameMetadata = {
-    version: 'vNext',
-    image: `${process.env.NEXT_PUBLIC_URL}/game-preview.png`,
-    buttons: [
-      {
-        label: "Start Game",
-        action: "post"
-      }
-    ],
-    postUrl: `${process.env.NEXT_PUBLIC_URL}/api/frame`
-  }
-
   return new Response(
     `<!DOCTYPE html>
     <html>
       <head>
-        <title>POD Play Tic-Tac-Toe</title>
+        <title>POD Play</title>
         <meta property="fc:frame" content="vNext" />
-        <meta property="fc:frame:image" content="${frameMetadata.image}" />
+        <meta property="fc:frame:image" content="${process.env.NEXT_PUBLIC_URL}/game-preview.png" />
         <meta property="fc:frame:image:aspect_ratio" content="1.91:1" />
-        <meta property="fc:frame:button:1" content="${frameMetadata.buttons[0].label}" />
-        <meta property="fc:frame:button:1:action" content="${frameMetadata.buttons[0].action}" />
-        <meta property="fc:frame:post_url" content="${frameMetadata.postUrl}" />
+        <meta property="fc:frame:button:1" content="Play POD Play" />
+        <meta property="fc:frame:button:1:action" content="post" />
+        <meta property="fc:frame:post_url" content="${process.env.NEXT_PUBLIC_URL}/api/frame" />
       </head>
     </html>`,
     {
@@ -35,33 +24,38 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const frameMetadata = {
-    buttons: [
-      {
-        label: "Play Again",
-        action: "post"
-      }
-    ],
-    image: `${process.env.NEXT_PUBLIC_URL}/game-board.png`,
-    post_url: `${process.env.NEXT_PUBLIC_URL}/api/frame`
-  }
-
-  return new Response(
-    `<!DOCTYPE html>
-    <html>
-      <head>
-        <title>POD Play Tic-Tac-Toe</title>
-        <meta property="fc:frame" content="vNext" />
-        <meta property="fc:frame:image" content="${frameMetadata.image}" />
-        <meta property="fc:frame:button:1" content="${frameMetadata.buttons[0].label}" />
-        <meta property="fc:frame:button:1:action" content="${frameMetadata.buttons[0].action}" />
-        <meta property="fc:frame:post_url" content="${frameMetadata.post_url}" />
-      </head>
-    </html>`,
-    {
-      headers: {
-        'Content-Type': 'text/html',
-      },
+  try {
+    const body = await req.json()
+    const { trustedData } = body
+    
+    const validationResult = await validateWithNeynar(trustedData.messageBytes)
+    if (!validationResult.valid) {
+      return new Response('Invalid frame message', { status: 400 })
     }
-  )
+
+    const { fid } = validationResult.action.interactor
+
+    return new Response(
+      `<!DOCTYPE html>
+      <html>
+        <head>
+          <title>POD Play</title>
+          <meta property="fc:frame" content="vNext" />
+          <meta property="fc:frame:image" content="${process.env.NEXT_PUBLIC_URL}/game-board.png" />
+          <meta property="fc:frame:image:aspect_ratio" content="1.91:1" />
+          <meta property="fc:frame:button:1" content=" Launch Game" />
+          <meta property="fc:frame:button:1:action" content="link" />
+          <meta property="fc:frame:button:1:target" content="${process.env.NEXT_PUBLIC_URL}/howtoplay" />
+        </head>
+      </html>`,
+      {
+        headers: {
+          'Content-Type': 'text/html',
+        },
+      }
+    )
+  } catch (error) {
+    console.error('Error in POST handler:', error)
+    return new Response('Internal Server Error', { status: 500 })
+  }
 } 
