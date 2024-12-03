@@ -1,7 +1,9 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useSearchParams } from 'next/navigation'
+import { useAccount, useConnect, useDisconnect, useSignMessage, useSignTypedData } from 'wagmi'
+import { config } from '@/components/providers/WagmiProvider'
 import MenuBoard from './MenuBoard'
 import TicTacToe3D from './TicTacToe3D'
 
@@ -16,12 +18,65 @@ export default function FrameGameWrapper({ initialGameState }: FrameGameWrapperP
   const [gameStarted, setGameStarted] = useState(false)
   const [gameSettings, setGameSettings] = useState(initialGameState || {})
   const [isMuted, setIsMuted] = useState(false)
+  const [isSDKLoaded, setIsSDKLoaded] = useState(false)
+  const [context, setContext] = useState<any>()
   const searchParams = useSearchParams()
+  const { address, isConnected } = useAccount()
+  const { disconnect } = useDisconnect()
+  const { connect } = useConnect()
   
+  const {
+    signMessage,
+    error: signError,
+    isError: isSignError,
+    isPending: isSignPending,
+  } = useSignMessage()
+
+  const {
+    signTypedData,
+    error: signTypedError,
+    isError: isSignTypedError,
+    isPending: isSignTypedPending,
+  } = useSignTypedData()
+
+  const handleSignMessage = useCallback(() => {
+    signMessage({ message: "POD Play: Verify your game session!" })
+  }, [signMessage])
+
+  const handleSignTypedData = useCallback(() => {
+    signTypedData({
+      domain: {
+        name: "POD Play",
+        version: "1",
+        chainId: 8453, // Base chain ID
+      },
+      types: {
+        GameSession: [
+          { name: "player", type: "address" },
+          { name: "timestamp", type: "uint256" },
+          { name: "gameId", type: "string" }
+        ],
+      },
+      message: {
+        player: address || "0x0",
+        timestamp: BigInt(Math.floor(Date.now() / 1000)),
+        gameId: `game-${Date.now()}`
+      },
+      primaryType: "GameSession",
+    })
+  }, [signTypedData, address])
+
+  const renderError = (error: Error | null) => {
+    if (!error) return null
+    return <div className="text-red-500 text-xs mt-1">{error.message}</div>
+  }
+
   useEffect(() => {
     const initFrame = async () => {
       try {
-        if (window.sdk) {
+        if (window.sdk && !isSDKLoaded) {
+          setIsSDKLoaded(true)
+          setContext(await window.sdk.context)
           await window.sdk.actions.ready()
           
           await window.sdk.actions.setPrimaryButton({
@@ -43,7 +98,7 @@ export default function FrameGameWrapper({ initialGameState }: FrameGameWrapperP
         window.sdk.events.off("primaryButtonClick", handlePrimaryButton)
       }
     }
-  }, [gameStarted])
+  }, [gameStarted, isSDKLoaded])
 
   const handlePrimaryButton = async () => {
     if (gameStarted) {
@@ -100,7 +155,7 @@ export default function FrameGameWrapper({ initialGameState }: FrameGameWrapperP
 
   const toggleMute = () => setIsMuted(!isMuted)
 
-  const handleGameEnd = async (result: 'win' | 'lose' | 'draw') => {
+  const handleGameEnd = useCallback(async (result: 'win' | 'lose' | 'draw') => {
     if (!window.sdk) return;
     
     const messages = {
@@ -110,16 +165,16 @@ export default function FrameGameWrapper({ initialGameState }: FrameGameWrapperP
     };
 
     await window.sdk.actions.close();
-  }
+  }, [])
 
-  const handleExternalLink = async (url: string) => {
+  const handleExternalLink = useCallback(async (url: string, shouldClose: boolean = false) => {
     if (!window.sdk) return;
     
     await window.sdk.actions.openUrl({
       url,
-      close: false
+      close: shouldClose
     });
-  }
+  }, [])
 
   useEffect(() => {
     const initContext = async () => {
@@ -137,8 +192,67 @@ export default function FrameGameWrapper({ initialGameState }: FrameGameWrapperP
     initContext();
   }, []);
 
+  const handleWalletConnection = async () => {
+    if (isConnected) {
+      disconnect()
+    } else {
+      connect({ connector: config.connectors[0] })
+    }
+  }
+
+  const renderWalletStatus = () => {
+    return (
+      <div className="absolute top-4 right-4 text-white">
+        {address && (
+          <div className="text-xs mb-2">
+            Connected: {address.slice(0, 6)}...{address.slice(-4)}
+          </div>
+        )}
+        <div className="flex flex-col gap-2">
+          <button
+            onClick={handleWalletConnection}
+            className="px-4 py-2 bg-purple-800 rounded hover:bg-purple-900 transition-colors"
+          >
+            {isConnected ? 'Disconnect' : 'Connect Wallet'}
+          </button>
+          
+          {isConnected && (
+            <>
+              <button
+                onClick={handleSignMessage}
+                disabled={isSignPending}
+                className={`px-4 py-2 bg-purple-800 rounded hover:bg-purple-900 transition-colors ${
+                  isSignPending ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
+              >
+                {isSignPending ? 'Signing...' : 'Sign Message'}
+              </button>
+              {isSignError && renderError(signError)}
+
+              <button
+                onClick={handleSignTypedData}
+                disabled={isSignTypedPending}
+                className={`px-4 py-2 bg-purple-800 rounded hover:bg-purple-900 transition-colors ${
+                  isSignTypedPending ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
+              >
+                {isSignTypedPending ? 'Signing...' : 'Sign Typed Data'}
+              </button>
+              {isSignTypedError && renderError(signTypedError)}
+            </>
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  if (!isSDKLoaded) {
+    return <div>Loading...</div>
+  }
+
   return (
-    <div className="h-[100svh] w-full bg-black">
+    <div className="h-[100svh] w-full bg-black relative">
+      {renderWalletStatus()}
       {!gameStarted ? (
         <MenuBoard
                   onStartGame={handleStartGame}
