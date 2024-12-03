@@ -1,10 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import dynamic from 'next/dynamic'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-
-const TicTacToe3D = dynamic(() => import('../components/TicTacToe3D'), { ssr: false })
+import TicTacToe3D from '../components/TicTacToe3D'
 
 export default function Game() {
   const [key, setKey] = useState(0)
@@ -50,18 +48,17 @@ export default function Game() {
   console.log('Piece set in Game component:', piece);
 
   return (
-    <main className="h-[100svh] bg-black text-white overflow-hidden">
-      <TicTacToe3D 
-        key={key}
-        onRestart={handleRestart}
-        onBackToMenu={handleBackToMenu}
-        onGameOver={handleGameOver}
+    <div key={key}>
+      <TicTacToe3D
         difficulty={difficulty}
         piece={piece}
         isMuted={isMuted}
         toggleMute={toggleMute}
+        onRestart={handleRestart}
+        onBackToMenu={handleBackToMenu}
+        onGameOver={handleGameOver}
       />
-    </main>
+    </div>
   )
 }
 
