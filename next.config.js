@@ -14,28 +14,7 @@ const nextConfig = {
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: [
-              "default-src 'self'",
-              "connect-src 'self' https://* wss://ws-us3.pusher.com",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live https://cdnjs.cloudflare.com",
-              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://vercel.live",
-              "font-src 'self' https://fonts.gstatic.com",
-              "img-src 'self' data: https: https://*.ipfs.w3s.link",
-              "frame-src 'self' https://vercel.live https://*.farcaster.xyz https://*.warpcast.com",
-              "frame-ancestors 'self' https://*.farcaster.xyz https://*.warpcast.com"
-            ].join('; ')
-          },
-          {
-            key: 'Access-Control-Allow-Origin',
-            value: '*'  // Or specify Farcaster domains if you want to be more restrictive
-          },
-          {
-            key: 'Access-Control-Allow-Methods',
-            value: 'GET, POST, OPTIONS'
-          },
-          {
-            key: 'Access-Control-Allow-Headers',
-            value: 'X-Farcaster-User, Content-Type'
+            value: "default-src 'self'; connect-src 'self' https://* wss://ws-us3.pusher.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live https://cdnjs.cloudflare.com https://cdn.farcaster.xyz; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://vercel.live; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: https://*.ipfs.w3s.link; frame-src 'self' https://vercel.live https://*.farcaster.xyz https://*.warpcast.com;"
           }
         ],
       },
