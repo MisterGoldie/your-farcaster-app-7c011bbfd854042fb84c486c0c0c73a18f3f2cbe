@@ -8,7 +8,7 @@ import useSound from 'use-sound'
 export default function Share() {
   const [playerData, setPlayerData] = useState({
     name: 'Player',
-    profileImage: 'https://example.com/default-profile.jpg',
+    profileImage: '/images/pod-logo.png',
     podScore: 100,
     record: { wins: 5, losses: 3, ties: 2 },
     totalGamesPlayed: 10,
@@ -37,7 +37,7 @@ export default function Share() {
 
   const shareGame = () => {
     const shareText = 'Welcome to POD Play presented by /thepod 🕹️. Think you can win a game of Tic-Tac-Toe?'
-    const shareUrl = 'https://your-farcaster-app.vercel.app'
+    const shareUrl = 'https://v2frametest.vercel.app'
     const farcasterShareURL = `https://warpcast.com/~/compose?text=${encodeURIComponent(shareText)}&embeds[]=${encodeURIComponent(shareUrl)}&mini_app_id=pod-play-tic-tac-toe`
     window.open(farcasterShareURL, '_blank')
   }

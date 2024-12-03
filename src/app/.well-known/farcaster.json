@@ -5,18 +5,13 @@
     "signature": ""
   },
   "frame": {
-    "image": {
-      "aspectRatio": "1.91:1",
-      "maxWidth": 1200,
-      "maxHeight": 628
-    },
-    "buttons": {
-      "maxCount": 4
-    },
-    "inputText": {
-      "maxLength": 256
-    },
-    "postUrl": "${process.env.NEXT_PUBLIC_URL}/api/frame"
+    "version": "0.0.0",
+    "name": "Tic-Tac-Toe",
+    "homeUrl": "${process.env.NEXT_PUBLIC_URL}",
+    "iconUrl": "YOUR_ICON_URL",
+    "splashImageUrl": "YOUR_SPLASH_URL",
+    "splashBackgroundColor": "#YOUR_COLOR",
+    "webhookUrl": "${process.env.NEXT_PUBLIC_URL}/api/frame"
   },
   "triggers": [
     {
