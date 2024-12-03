@@ -32,7 +32,7 @@ function RoundedRectangle({ width, height, radius, color }: { width: number; hei
 }
 
 type MenuBoardProps = {
-  onStartGame: (difficulty: 'easy' | 'medium' | 'hard', piece: 'pumpkin' | 'scarygary' | 'podplaylogo') => void
+  onStartGame: (difficulty: 'easy' | 'medium' | 'hard', piece: 'chili' | 'scarygary' | 'podplaylogo') => void
   onGoBack: () => void
   isMuted: boolean
   toggleMute: () => void
@@ -42,7 +42,7 @@ type MenuBoardProps = {
 }
 
 function MenuText({ onStartGame, isMuted, toggleMute, setMenuStep, menuStep }: { 
-  onStartGame: (difficulty: 'easy' | 'medium' | 'hard', piece: 'pumpkin' | 'scarygary' | 'podplaylogo') => void,
+  onStartGame: (difficulty: 'easy' | 'medium' | 'hard', piece: 'chili' | 'scarygary' | 'podplaylogo') => void,
   isMuted: boolean,
   toggleMute: () => void,
   setMenuStep: (value: 'game' | 'piece' | 'difficulty') => void,
@@ -51,11 +51,11 @@ function MenuText({ onStartGame, isMuted, toggleMute, setMenuStep, menuStep }: {
   stopHalloweenMusic: () => void
 }) {
   const { viewport } = useThree()
-  const [selectedPiece, setSelectedPiece] = useState<'pumpkin' | 'scarygary' | 'podplaylogo'>('pumpkin')
+  const [selectedPiece, setSelectedPiece] = useState<'chili' | 'scarygary' | 'podplaylogo'>('chili')
   const [hoveredButton, setHoveredButton] = useState<string | null>(null)
 
   const difficultyOptions = ['easy', 'medium', 'hard'] as const
-  const pieceOptions = ['pumpkin', 'scarygary', 'podplaylogo'] as const
+  const pieceOptions = ['chili', 'scarygary', 'podplaylogo'] as const
 
   const buttonWidth = viewport.width * 0.6
   const buttonHeight = viewport.height * 0.15

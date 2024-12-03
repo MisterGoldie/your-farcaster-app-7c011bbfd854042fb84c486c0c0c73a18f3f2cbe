@@ -8,9 +8,10 @@ type CellProps = {
   position: [number, number, number]
   onClick: () => void
   value: string | null
+  piece: 'chili' | 'scarygary' | 'podplaylogo'
 }
 
-function Cell({ position, onClick, value, piece }: CellProps & { piece: 'pumpkin' | 'scarygary' | 'podplaylogo' }) {
+function Cell({ position, onClick, value, piece }: CellProps) {
   return (
     <group position={position}>
       <mesh onClick={onClick}>
@@ -24,8 +25,8 @@ function Cell({ position, onClick, value, piece }: CellProps & { piece: 'pumpkin
       )}
       {value === 'O' && (
         <group position={[0, 0, 0.06]}>
-          {piece === 'pumpkin' ? (
-            <PumpkinSprite position={[0, 0, 0]} />
+          {piece === 'chili' ? (
+            <ChiliSprite position={[0, 0, 0]} />
           ) : piece === 'scarygary' ? (
             <ScaryGarySprite position={[0, 0, 0]} />
           ) : (
@@ -33,17 +34,6 @@ function Cell({ position, onClick, value, piece }: CellProps & { piece: 'pumpkin
           )}
         </group>
       )}
-    </group>
-  )
-}
-
-function PumpkinSprite({ position }: { position: [number, number, number] }) {
-  const texture = useLoader(THREE.TextureLoader, '/pumpkin.png')
-  return (
-    <group position={position}>
-      <Plane args={[0.8, 0.8]}>
-        <meshBasicMaterial map={texture} transparent side={THREE.DoubleSide} />
-      </Plane>
     </group>
   )
 }
@@ -81,9 +71,20 @@ function PodPlayLogoSprite({ position }: { position: [number, number, number] })
   )
 }
 
+function ChiliSprite({ position }: { position: [number, number, number] }) {
+  const texture = useLoader(THREE.TextureLoader, '/chili.png')
+  return (
+    <group position={position}>
+      <Plane args={[0.8, 0.8]}>
+        <meshBasicMaterial map={texture} transparent side={THREE.DoubleSide} />
+      </Plane>
+    </group>
+  )
+}
+
 function Board({ difficulty, piece, isMuted, toggleMute, onRestart }: {
   difficulty: 'easy' | 'medium' | 'hard',
-  piece: 'pumpkin' | 'scarygary' | 'podplaylogo',
+  piece: 'chili' | 'scarygary' | 'podplaylogo',
   isMuted: boolean,
   toggleMute: () => void,
   onRestart: () => void
@@ -406,7 +407,7 @@ export default function TicTacToe3D({ onRestart, onBackToMenu, difficulty, piece
   onRestart: () => void, 
   onBackToMenu: () => void,
   difficulty: 'easy' | 'medium' | 'hard',
-  piece: 'pumpkin' | 'scarygary' | 'podplaylogo',
+  piece: 'chili' | 'scarygary' | 'podplaylogo',
   isMuted: boolean,
   toggleMute: () => void
 }) {
