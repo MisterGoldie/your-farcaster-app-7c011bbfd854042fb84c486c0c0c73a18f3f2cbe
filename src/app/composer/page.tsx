@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -40,7 +41,7 @@ export default function ComposerAction() {
           className="w-full p-2 border rounded mb-4"
           rows={3}
           value={message}
-          onChange={(e) => setMessage(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setMessage(e.target.value)}
         />
 
         <div className="flex justify-between">
@@ -61,4 +62,3 @@ export default function ComposerAction() {
     </main>
   )
 }
-//
