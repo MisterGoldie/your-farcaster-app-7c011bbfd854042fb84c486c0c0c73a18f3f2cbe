@@ -124,27 +124,16 @@ export async function POST(req: NextRequest) {
 
     return new Response(
       `<!DOCTYPE html><html><head>
-        <meta name="fc:frame" content='${JSON.stringify({
-          version: 'next',
-          imageUrl: frameUrl,
-          buttons: [
-            {
-              label: "Play Game",
-              action: "post",
-              target: postUrl
-            },
-            {
-              label: "Open Website",
-              action: "link",
-              target: `${process.env.NEXT_PUBLIC_URL}/game`
-            },
-            {
-              label: "Close Frame",
-              action: "post",
-              target: `${process.env.NEXT_PUBLIC_URL}/api/frame/close`
-            }
-          ]
-        })}' />
+        <meta property="fc:frame" content="vNext" />
+        <meta property="fc:frame:image" content="${frameUrl}" />
+        <meta property="fc:frame:button:1" content="Play Game" />
+        <meta property="fc:frame:button:1:action" content="post" />
+        <meta property="fc:frame:button:2" content="Open Website" />
+        <meta property="fc:frame:button:2:action" content="link" />
+        <meta property="fc:frame:button:2:target" content="${process.env.NEXT_PUBLIC_URL}/game" />
+        <meta property="fc:frame:button:3" content="Close Frame" />
+        <meta property="fc:frame:button:3:action" content="post" />
+        <meta property="fc:frame:post_url" content="${postUrl}" />
       </head></html>`,
       {
         headers: { 'Content-Type': 'text/html' },
