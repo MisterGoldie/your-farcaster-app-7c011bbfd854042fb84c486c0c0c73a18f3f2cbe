@@ -202,12 +202,16 @@ export async function GET(req: NextRequest) {
       )
     )
 
+    const imageConfig = {
+      width: 1200,
+      height: 628,
+    }
+
     if (state === 'menu') {
       return new ImageResponse(
         renderMenuBoard(),
         {
-          width: 1200,
-          height: 628,
+          ...imageConfig,
         }
       )
     } else {
@@ -218,8 +222,7 @@ export async function GET(req: NextRequest) {
           )
         ),
         {
-          width: 600,
-          height: 800,
+          ...imageConfig,
           fonts: [
             {
               name: 'Frijole',

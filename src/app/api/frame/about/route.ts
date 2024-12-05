@@ -22,11 +22,8 @@ export async function POST(request: NextRequest) {
           button: {
             title: "Play Game",
             action: {
-              type: "launch_frame",
-              name: "POD Play",
-              url: `${process.env.NEXT_PUBLIC_URL}/api/frame`,
-              splashImageUrl: `${process.env.NEXT_PUBLIC_URL}/splash.png`,
-              splashBackgroundColor: "#9333ea"
+              type: "post",
+              url: `${process.env.NEXT_PUBLIC_URL}/api/frame`
             }
           }
         })}' />

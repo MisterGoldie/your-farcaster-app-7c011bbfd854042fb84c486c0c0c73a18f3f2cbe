@@ -6,20 +6,21 @@ export async function GET(req: NextRequest) {
   params.set('state', 'menu')
   
   return new Response(
-    `<!DOCTYPE html>
-    <html>
-      <head>
-        <meta property="fc:frame" content="vNext" />
-        <meta property="fc:frame:image" content="${process.env.NEXT_PUBLIC_URL}/api/frame/render?${params.toString()}" />
-        <meta property="fc:frame:button:1" content="Start Game" />
-        <meta property="fc:frame:button:1:action" content="post" />
-        <meta property="fc:frame:post_url" content="${process.env.NEXT_PUBLIC_URL}/api/frame" />
-      </head>
-    </html>`,
+    `<!DOCTYPE html><html><head>
+      <meta name="fc:frame" content='${JSON.stringify({
+        version: 'next',
+        imageUrl: `${process.env.NEXT_PUBLIC_URL}/api/frame/render?${params.toString()}`,
+        button: {
+          title: "Start Game",
+          action: {
+            type: "post",
+            url: `${process.env.NEXT_PUBLIC_URL}/api/frame`
+          }
+        }
+      })}' />
+    </head></html>`,
     {
-      headers: {
-        'Content-Type': 'text/html',
-      },
+      headers: { 'Content-Type': 'text/html' },
     }
   )
 }
@@ -116,30 +117,21 @@ export async function POST(req: NextRequest) {
     const postUrl = `${process.env.NEXT_PUBLIC_URL}/api/frame?${params.toString()}`
 
     return new Response(
-      `<!DOCTYPE html>
-      <html>
-        <head>
-          <title>POD Play</title>
-          <meta name="fc:frame" content='${JSON.stringify({
-            version: 'next',
-            imageUrl: frameUrl,
-            button: {
-              title: "Play Game",
-              action: {
-                type: "launch_frame",
-                name: "POD Play",
-                url: postUrl,
-                splashImageUrl: `${process.env.NEXT_PUBLIC_URL}/splash.png`,
-                splashBackgroundColor: "#9333ea"
-              }
+      `<!DOCTYPE html><html><head>
+        <meta name="fc:frame" content='${JSON.stringify({
+          version: 'next',
+          imageUrl: frameUrl,
+          button: {
+            title: buttons[0]?.text || "Play Game",
+            action: {
+              type: "post",
+              url: postUrl
             }
-          })}' />
-        </head>
-      </html>`,
+          }
+        })}' />
+      </head></html>`,
       {
-        headers: {
-          'Content-Type': 'text/html',
-        },
+        headers: { 'Content-Type': 'text/html' },
       }
     )
   } catch (error) {

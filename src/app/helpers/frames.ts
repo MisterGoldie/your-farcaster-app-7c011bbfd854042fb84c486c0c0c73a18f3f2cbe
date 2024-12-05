@@ -63,11 +63,8 @@ export async function createFrame(params: {
       button: {
         title: params.buttonTitle,
         action: {
-          type: "launch_frame",
-          name: "POD Play",
-          url: params.actionTarget || `${process.env.NEXT_PUBLIC_URL}/api/frame`,
-          splashImageUrl: `${process.env.NEXT_PUBLIC_URL}/splash.png`,
-          splashBackgroundColor: "#9333ea"
+          type: params.actionType || 'post',
+          url: params.actionTarget || `${process.env.NEXT_PUBLIC_URL}/api/frame`
         }
       }
     })}' />
