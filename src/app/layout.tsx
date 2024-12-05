@@ -5,12 +5,20 @@ export const metadata: Metadata = {
   title: 'POD Play Tic-Tac-Toe',
   description: 'A Tic-Tac-Toe game presented by /thepod',
   other: {
-    'fc:frame': 'vNext',
-    'fc:frame:image': `${process.env.NEXT_PUBLIC_URL}/splash.png`,
-    'fc:frame:button:1': 'Play as Chili',
-    'fc:frame:button:2': 'Play as ScaryGary',
-    'fc:frame:button:3': 'Play as POD',
-    'fc:frame:post_url': `${process.env.NEXT_PUBLIC_URL}/api/frame`
+    'fc:frame': JSON.stringify({
+      version: 'next',
+      imageUrl: `${process.env.NEXT_PUBLIC_URL}/game-board.png`,
+      button: {
+        title: "Play POD Play",
+        action: {
+          type: "launch_frame",
+          name: "POD Play",
+          url: "https://podplayv2.vercel.app/",
+          splashImageUrl: `${process.env.NEXT_PUBLIC_URL}/splash.png`,
+          splashBackgroundColor: "#9333ea"
+        }
+      }
+    })
   }
 }
 
