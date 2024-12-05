@@ -160,15 +160,11 @@ export async function GET(req: NextRequest) {
       game: renderGame,
     }[state] || renderMenu
 
-    return new Response(
-      `<!DOCTYPE html><html><head>
-        <meta property="fc:frame" content="vNext" />
-        <meta property="fc:frame:image" content="${process.env.NEXT_PUBLIC_URL}/api/frame/render?state=game" />
-        <meta property="fc:frame:button:1" content="Make Move" />
-        <meta property="fc:frame:post_url" content="${process.env.NEXT_PUBLIC_URL}/api/frame" />
-      </head></html>`,
+    return new ImageResponse(
+      content(),
       {
-        headers: { 'Content-Type': 'text/html' },
+        width: 1200,
+        height: 630,
       }
     )
   } catch (error) {
