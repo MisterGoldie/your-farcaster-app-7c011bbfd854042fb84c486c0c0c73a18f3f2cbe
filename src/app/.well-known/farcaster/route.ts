@@ -97,23 +97,23 @@ export async function GET() {
   const manifest: FarcasterManifest = {
     accountAssociation: {
       header: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
-      payload: "eyJkb21haW4iOiJ2MmZyYW1ldGVzdC52ZXJjZWwuYXBwIn0",
+      payload: "eyJkb21haW4iOiJwb2RwbGF5djIudmVyY2VsLmFwcCJ9",
       signature: "MHhlM2MxZmVlMjcxYTY4YWNjYTI3NzM2ZGExNGJkN2YyMWQ5NDJiMzc3NjU1Mzk5NTU2Y2ZmNWFmMmMxODBlMGE4MWU2ZmVkMTMyNzljZmIyNDA2OTI5ODJjMzRlNWQ5MmE5NGM1NjRjYzVjODlmMTQ3Y2Y3ZTQxYWY0MGJmOWQ3YjFi"
     },
     frame: {
       version: "0.0.0",
       name: "POD Play Tic-Tac-Toe",
-      homeUrl: "https://v2frametest.vercel.app",
-      iconUrl: "https://v2frametest.vercel.app/icon.png",
-      splashImageUrl: "https://v2frametest.vercel.app/splash.png",
+      homeUrl: "https://podplayv2.vercel.app",
+      iconUrl: "https://podplayv2.vercel.app/icon.png",
+      splashImageUrl: "https://podplayv2.vercel.app/splash.png",
       splashBackgroundColor: "#9333ea",
-      webhookUrl: "https://v2frametest.vercel.app/api/frame"
+      webhookUrl: "https://podplayv2.vercel.app/api/frame"
     },
     triggers: [
       {
         type: "cast",
         id: "play-game",
-        url: "https://v2frametest.vercel.app/api/frame",
+        url: "https://podplayv2.vercel.app/api/frame",
         name: "Play Tic-Tac-Toe"
       }
     ]
