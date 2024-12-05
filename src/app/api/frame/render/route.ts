@@ -10,9 +10,9 @@ export async function GET(req: NextRequest) {
   const board = searchParams.get('board')?.split(',') || Array(9).fill(null)
 
   try {
-    // Load the font
-    const inter = await fetch(
-      new URL('../../fonts/Frijole-Regular.ttf', import.meta.url)
+    // Load the font from Google Fonts
+    const fontData = await fetch(
+      'https://fonts.googleapis.com/css2?family=Frijole&display=swap'
     ).then((res) => res.arrayBuffer())
 
     const styles = {
@@ -167,7 +167,7 @@ export async function GET(req: NextRequest) {
         fonts: [
           {
             name: 'Frijole',
-            data: inter,
+            data: fontData,
             style: 'normal',
             weight: 400
           }
