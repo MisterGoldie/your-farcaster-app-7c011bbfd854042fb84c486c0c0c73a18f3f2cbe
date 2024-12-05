@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { validateWithNeynar } from '@/app/helpers/frames'
 
 export async function GET(req: NextRequest) {
@@ -28,7 +28,13 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    const { untrustedData } = body
+    const { untrustedData, trustedData } = body
+    
+    // Add validation
+    const validationResult = await validateWithNeynar(trustedData.messageBytes)
+    if (!validationResult.valid) {
+      return NextResponse.json({ message: "Invalid frame message" }, { status: 400 })
+    }
 
     const buttonIndex = untrustedData?.buttonIndex || 1
     const currentState = new URL(req.url).searchParams.get('state') || 'menu'

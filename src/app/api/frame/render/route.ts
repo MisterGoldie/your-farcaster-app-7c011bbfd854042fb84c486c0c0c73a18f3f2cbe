@@ -10,10 +10,17 @@ export async function GET(req: NextRequest) {
   const board = searchParams.get('board')?.split(',') || Array(9).fill(null)
 
   try {
-    // Load the font from Google Fonts
-    const fontData = await fetch(
-      'https://fonts.googleapis.com/css2?family=Frijole&display=swap'
-    ).then((res) => res.arrayBuffer())
+    // Add error handling for font loading
+    let fontData;
+    try {
+      fontData = await fetch(
+        'https://fonts.googleapis.com/css2?family=Frijole&display=swap'
+      ).then((res) => res.arrayBuffer())
+    } catch (error) {
+      console.error('Failed to load font:', error)
+      // Use a fallback font if Frijole fails to load
+      fontData = null
+    }
 
     const styles = {
       container: {
@@ -226,7 +233,7 @@ export async function GET(req: NextRequest) {
           fonts: [
             {
               name: 'Frijole',
-              data: fontData,
+              data: fontData || Buffer.from([]),
               style: 'normal',
               weight: 400
             }
