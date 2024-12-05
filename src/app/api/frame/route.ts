@@ -5,7 +5,7 @@ export async function GET(req: NextRequest) {
   return new Response(
     `<!DOCTYPE html><html><head>
       <meta property="fc:frame" content="vNext" />
-      <meta property="fc:frame:image" content="${process.env.NEXT_PUBLIC_URL}/api/frame/render?state=menu" />
+      <meta property="fc:frame:image" content="${process.env.NEXT_PUBLIC_URL}/splash.png" />
       <meta property="fc:frame:button:1" content="Play as Chili" />
       <meta property="fc:frame:button:2" content="Play as ScaryGary" />
       <meta property="fc:frame:button:3" content="Play as POD" />
