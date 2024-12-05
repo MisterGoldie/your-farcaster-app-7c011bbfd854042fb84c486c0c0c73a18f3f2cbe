@@ -10,8 +10,9 @@ export async function GET(req: NextRequest) {
   const board = searchParams.get('board')?.split(',') || Array(9).fill(null)
 
   try {
-    const fontData = await fetch(
-      'https://fonts.googleapis.com/css2?family=Frijole&display=swap'
+    // Load the font
+    const inter = await fetch(
+      new URL('../../fonts/Frijole-Regular.ttf', import.meta.url)
     ).then((res) => res.arrayBuffer())
 
     const styles = {
@@ -49,20 +50,20 @@ export async function GET(req: NextRequest) {
         padding: '12px',
         width: '100%',
         marginBottom: '20px',
+        textAlign: 'center' as const,
       },
       title: {
-        fontSize: '28px',
+        fontSize: '32px',
         fontWeight: 'bold',
-        textAlign: 'center',
         color: 'white',
-        margin: 0,
+        margin: '0 0 8px 0',
         fontFamily: 'Frijole',
       },
       subtitle: {
-        fontSize: '20px',
-        textAlign: 'center',
+        fontSize: '24px',
         color: 'white',
-        marginTop: '10px',
+        margin: 0,
+        fontFamily: 'Frijole',
       },
       board: {
         display: 'grid',
@@ -83,6 +84,7 @@ export async function GET(req: NextRequest) {
         fontSize: '40px',
         color: 'white',
         fontWeight: 'bold',
+        fontFamily: 'Frijole',
       },
       pieceSelection: {
         display: 'flex',
@@ -94,6 +96,7 @@ export async function GET(req: NextRequest) {
         fontSize: '48px',
         color: 'white',
         marginBottom: '10px',
+        fontFamily: 'Frijole',
       }
     }
 
@@ -109,7 +112,8 @@ export async function GET(req: NextRequest) {
     const renderDifficulty = () => (
       React.createElement('div', { style: styles.content },
         React.createElement('div', { style: styles.header },
-          React.createElement('h1', { style: styles.title }, 'Select Difficulty')
+          React.createElement('h1', { style: styles.title }, 'Select Difficulty'),
+          React.createElement('p', { style: styles.subtitle }, 'Choose your level')
         )
       )
     )
@@ -117,7 +121,8 @@ export async function GET(req: NextRequest) {
     const renderPieceSelection = () => (
       React.createElement('div', { style: styles.content },
         React.createElement('div', { style: styles.header },
-          React.createElement('h1', { style: styles.title }, 'Choose Your Piece')
+          React.createElement('h1', { style: styles.title }, 'Choose Your Piece'),
+          React.createElement('p', { style: styles.subtitle }, 'X or O')
         ),
         React.createElement('div', { style: styles.pieceSelection },
           React.createElement('div', { style: styles.pieceOption }, 'X'),
@@ -137,7 +142,7 @@ export async function GET(req: NextRequest) {
             React.createElement('div', { 
               key: index,
               style: styles.cell 
-            }, value)
+            }, value || (index + 1).toString())
           )
         )
       )
@@ -162,7 +167,7 @@ export async function GET(req: NextRequest) {
         fonts: [
           {
             name: 'Frijole',
-            data: fontData,
+            data: inter,
             style: 'normal',
             weight: 400
           }
