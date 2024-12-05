@@ -1,5 +1,4 @@
 import { NextRequest } from 'next/server'
-import { ImageResponse } from 'next/og'
 import React from 'react'
 
 export async function GET(req: NextRequest) {
@@ -162,85 +161,17 @@ export async function GET(req: NextRequest) {
       game: renderGame,
     }[state] || renderMenu
 
-    const menuStyles = {
-      container: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: '100%',
-        height: '100%',
-        backgroundColor: '#1a1a1a',
-        padding: '20px',
-      },
-      content: {
-        width: '100%',
-        maxWidth: '400px',
-        aspectRatio: '1/1',
-        backgroundColor: '#9333ea',
-        borderRadius: '8px',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '20px',
-      },
-      title: {
-        color: 'white',
-        fontSize: '48px',
-        fontWeight: 'bold',
-        textAlign: 'center',
-        margin: '0 0 20px 0',
-      },
-      subtitle: {
-        color: 'white',
-        fontSize: '24px',
-        textAlign: 'center',
-        margin: 0,
+    return new Response(
+      `<!DOCTYPE html><html><head>
+        <meta property="fc:frame" content="vNext" />
+        <meta property="fc:frame:image" content="${process.env.NEXT_PUBLIC_URL}/api/frame/render?state=game" />
+        <meta property="fc:frame:button:1" content="Make Move" />
+        <meta property="fc:frame:post_url" content="${process.env.NEXT_PUBLIC_URL}/api/frame" />
+      </head></html>`,
+      {
+        headers: { 'Content-Type': 'text/html' },
       }
-    }
-
-    const renderMenuBoard = () => (
-      React.createElement('div', { style: menuStyles.container },
-        React.createElement('div', { style: menuStyles.content },
-          React.createElement('h1', { style: menuStyles.title }, 'POD Play'),
-          React.createElement('p', { style: menuStyles.subtitle }, 'Tic-Tac-Toe')
-        )
-      )
     )
-
-    const imageConfig = {
-      width: 1200,
-      height: 628,
-    }
-
-    if (state === 'menu') {
-      return new ImageResponse(
-        renderMenuBoard(),
-        {
-          ...imageConfig,
-        }
-      )
-    } else {
-      return new ImageResponse(
-        React.createElement('div', { style: styles.container },
-          React.createElement('div', { style: styles.card },
-            content()
-          )
-        ),
-        {
-          ...imageConfig,
-          fonts: [
-            {
-              name: 'Frijole',
-              data: fontData || Buffer.from([]),
-              style: 'normal',
-              weight: 400
-            }
-          ]
-        }
-      )
-    }
   } catch (error) {
     console.error('Error generating image:', error)
     return new Response('Error generating image', { status: 500 })
