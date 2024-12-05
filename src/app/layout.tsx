@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   other: {
     'fc:frame': JSON.stringify({
       version: 'next',
-      imageUrl: `${process.env.NEXT_PUBLIC_URL}/game-board.png`,
+      imageUrl: `${process.env.NEXT_PUBLIC_URL}/api/frame/render`,
       button: {
         title: "Play POD Play",
         action: {

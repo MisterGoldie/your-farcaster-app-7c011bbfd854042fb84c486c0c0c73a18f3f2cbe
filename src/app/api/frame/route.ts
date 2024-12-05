@@ -6,6 +6,7 @@ export async function GET(req: NextRequest) {
     `<!DOCTYPE html>
     <html>
       <head>
+        <title>POD Play</title>
         <meta property="fc:frame" content="vNext" />
         <meta property="fc:frame:image" content="${process.env.NEXT_PUBLIC_URL}/api/frame/render" />
         <meta property="fc:frame:button:1" content="Start Game" />
@@ -26,20 +27,19 @@ export async function POST(req: NextRequest) {
     const body = await req.json()
     const { untrustedData } = body
 
-    // Validate with Neynar if needed
     const buttonIndex = untrustedData?.buttonIndex || 1
-    const state = new URL(req.url).searchParams.get('state') || 'menu'
-    const difficulty = new URL(req.url).searchParams.get('difficulty') || ''
-    const piece = new URL(req.url).searchParams.get('piece') || ''
-    const board = new URL(req.url).searchParams.get('board') || ''
+    const currentState = new URL(req.url).searchParams.get('state') || 'menu'
+    const currentDifficulty = new URL(req.url).searchParams.get('difficulty') || ''
+    const currentPiece = new URL(req.url).searchParams.get('piece') || ''
+    const currentBoard = new URL(req.url).searchParams.get('board') || ''
 
-    let nextState = state
-    let nextDifficulty = difficulty
-    let nextPiece = piece
-    let nextBoard = board
+    let nextState = currentState
+    let nextDifficulty = currentDifficulty
+    let nextPiece = currentPiece
+    let nextBoard = currentBoard
 
     // Handle state transitions
-    switch (state) {
+    switch (currentState) {
       case 'menu':
         nextState = 'difficulty'
         break
@@ -48,8 +48,9 @@ export async function POST(req: NextRequest) {
         if (buttonIndex <= 3) {
           nextState = 'piece'
           nextDifficulty = ['Easy', 'Medium', 'Hard'][buttonIndex - 1]
-        } else {
+        } else if (buttonIndex === 4) {
           nextState = 'menu'
+          nextDifficulty = ''
         }
         break
       
@@ -58,18 +59,22 @@ export async function POST(req: NextRequest) {
           nextState = 'game'
           nextPiece = buttonIndex === 1 ? 'X' : 'O'
           nextBoard = Array(9).fill(null).join(',')
-        } else {
+        } else if (buttonIndex === 3) {
           nextState = 'difficulty'
+          nextPiece = ''
         }
         break
       
       case 'game':
         if (buttonIndex === 9) {
           nextState = 'menu'
-        } else if (board) {
-          const boardArray = board.split(',')
-          if (buttonIndex <= 9 && !boardArray[buttonIndex - 1]) {
-            boardArray[buttonIndex - 1] = piece
+          nextBoard = ''
+          nextPiece = ''
+          nextDifficulty = ''
+        } else if (buttonIndex <= 8) {
+          const boardArray = currentBoard.split(',')
+          if (!boardArray[buttonIndex - 1]) {
+            boardArray[buttonIndex - 1] = currentPiece
             nextBoard = boardArray.join(',')
           }
         }
@@ -90,31 +95,33 @@ export async function POST(req: NextRequest) {
         { text: 'Play as O' },
         { text: 'Back' }
       ],
-      game: [
-        ...(nextBoard ? nextBoard.split(',').map((_, i) => ({ text: (i + 1).toString() })) : []),
-        { text: 'New Game' }
-      ]
+      game: Array(9).fill(null).map((_, i) => ({ text: (i + 1).toString() }))
     } as const
 
     const buttons = stateButtons[nextState as keyof typeof stateButtons] || stateButtons.menu
 
     // Build frame URL with state parameters
-    let frameUrl = `${process.env.NEXT_PUBLIC_URL}/api/frame/render?state=${nextState}`
-    if (nextDifficulty) frameUrl += `&difficulty=${nextDifficulty}`
-    if (nextPiece) frameUrl += `&piece=${nextPiece}`
-    if (nextBoard) frameUrl += `&board=${nextBoard}`
+    const params = new URLSearchParams()
+    params.set('state', nextState)
+    if (nextDifficulty) params.set('difficulty', nextDifficulty)
+    if (nextPiece) params.set('piece', nextPiece)
+    if (nextBoard) params.set('board', nextBoard)
+
+    const frameUrl = `${process.env.NEXT_PUBLIC_URL}/api/frame/render?${params.toString()}`
+    const postUrl = `${process.env.NEXT_PUBLIC_URL}/api/frame?${params.toString()}`
 
     return new Response(
       `<!DOCTYPE html>
       <html>
         <head>
+          <title>POD Play</title>
           <meta property="fc:frame" content="vNext" />
           <meta property="fc:frame:image" content="${frameUrl}" />
           ${buttons.map((button, i) => `
             <meta property="fc:frame:button:${i + 1}" content="${button.text}" />
             <meta property="fc:frame:button:${i + 1}:action" content="post" />
           `).join('')}
-          <meta property="fc:frame:post_url" content="${process.env.NEXT_PUBLIC_URL}/api/frame?state=${nextState}${nextDifficulty ? `&difficulty=${nextDifficulty}` : ''}${nextPiece ? `&piece=${nextPiece}` : ''}${nextBoard ? `&board=${nextBoard}` : ''}" />
+          <meta property="fc:frame:post_url" content="${postUrl}" />
         </head>
       </html>`,
       {
