@@ -2,16 +2,13 @@ import { NextRequest } from 'next/server'
 import { validateWithNeynar } from '@/app/helpers/frames'
 
 export async function GET(req: NextRequest) {
-  const params = new URLSearchParams()
-  params.set('state', 'menu')
-  
   return new Response(
     `<!DOCTYPE html>
     <html>
       <head>
         <title>POD Play</title>
         <meta property="fc:frame" content="vNext" />
-        <meta property="fc:frame:image" content="${process.env.NEXT_PUBLIC_URL}/api/frame/render?${params.toString()}" />
+        <meta property="fc:frame:image" content="${process.env.NEXT_PUBLIC_URL}/api/frame/render" />
         <meta property="fc:frame:button:1" content="Start Game" />
         <meta property="fc:frame:button:1:action" content="post" />
         <meta property="fc:frame:post_url" content="${process.env.NEXT_PUBLIC_URL}/api/frame" />
@@ -69,12 +66,12 @@ export async function POST(req: NextRequest) {
         break
       
       case 'game':
-        if (buttonIndex === 10) {
+        if (buttonIndex === 9) {
           nextState = 'menu'
           nextBoard = ''
           nextPiece = ''
           nextDifficulty = ''
-        } else if (buttonIndex <= 9) {
+        } else if (buttonIndex <= 8) {
           const boardArray = currentBoard.split(',')
           if (!boardArray[buttonIndex - 1]) {
             boardArray[buttonIndex - 1] = currentPiece
@@ -98,10 +95,7 @@ export async function POST(req: NextRequest) {
         { text: 'Play as O' },
         { text: 'Back' }
       ],
-      game: [
-        ...Array(9).fill(null).map((_, i) => ({ text: (i + 1).toString() })),
-        { text: 'Back to Menu' }
-      ]
+      game: Array(9).fill(null).map((_, i) => ({ text: (i + 1).toString() }))
     } as const
 
     const buttons = stateButtons[nextState as keyof typeof stateButtons] || stateButtons.menu

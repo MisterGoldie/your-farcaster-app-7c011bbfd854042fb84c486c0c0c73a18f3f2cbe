@@ -1,5 +1,5 @@
-import { NextRequest } from 'next/server'
 import { ImageResponse } from 'next/og'
+import { NextRequest } from 'next/server'
 import React from 'react'
 
 export async function GET(req: NextRequest) {
@@ -10,7 +10,6 @@ export async function GET(req: NextRequest) {
   const board = searchParams.get('board')?.split(',') || Array(9).fill(null)
 
   try {
-    // Load the font from Google Fonts
     const fontData = await fetch(
       'https://fonts.googleapis.com/css2?family=Frijole&display=swap'
     ).then((res) => res.arrayBuffer())
@@ -50,20 +49,20 @@ export async function GET(req: NextRequest) {
         padding: '12px',
         width: '100%',
         marginBottom: '20px',
-        textAlign: 'center' as const,
       },
       title: {
-        fontSize: '32px',
-        fontWeight: 'bold',
         color: 'white',
-        margin: '0 0 8px 0',
+        fontSize: '28px',
+        fontWeight: 'bold',
+        textAlign: 'center',
+        margin: 0,
         fontFamily: 'Frijole',
       },
       subtitle: {
-        fontSize: '24px',
         color: 'white',
-        margin: 0,
-        fontFamily: 'Frijole',
+        fontSize: '20px',
+        textAlign: 'center',
+        marginTop: '10px',
       },
       board: {
         display: 'grid',
@@ -84,7 +83,6 @@ export async function GET(req: NextRequest) {
         fontSize: '40px',
         color: 'white',
         fontWeight: 'bold',
-        fontFamily: 'Frijole',
       },
       pieceSelection: {
         display: 'flex',
@@ -96,7 +94,6 @@ export async function GET(req: NextRequest) {
         fontSize: '48px',
         color: 'white',
         marginBottom: '10px',
-        fontFamily: 'Frijole',
       }
     }
 
@@ -112,8 +109,7 @@ export async function GET(req: NextRequest) {
     const renderDifficulty = () => (
       React.createElement('div', { style: styles.content },
         React.createElement('div', { style: styles.header },
-          React.createElement('h1', { style: styles.title }, 'Select Difficulty'),
-          React.createElement('p', { style: styles.subtitle }, 'Choose your level')
+          React.createElement('h1', { style: styles.title }, 'Select Difficulty')
         )
       )
     )
@@ -121,8 +117,7 @@ export async function GET(req: NextRequest) {
     const renderPieceSelection = () => (
       React.createElement('div', { style: styles.content },
         React.createElement('div', { style: styles.header },
-          React.createElement('h1', { style: styles.title }, 'Choose Your Piece'),
-          React.createElement('p', { style: styles.subtitle }, 'X or O')
+          React.createElement('h1', { style: styles.title }, 'Choose Your Piece')
         ),
         React.createElement('div', { style: styles.pieceSelection },
           React.createElement('div', { style: styles.pieceOption }, 'X'),
@@ -142,7 +137,7 @@ export async function GET(req: NextRequest) {
             React.createElement('div', { 
               key: index,
               style: styles.cell 
-            }, value || (index + 1).toString())
+            }, value)
           )
         )
       )
@@ -179,4 +174,3 @@ export async function GET(req: NextRequest) {
     return new Response('Error generating image', { status: 500 })
   }
 }
-//
