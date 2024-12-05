@@ -127,13 +127,23 @@ export async function POST(req: NextRequest) {
         <meta name="fc:frame" content='${JSON.stringify({
           version: 'next',
           imageUrl: frameUrl,
-          button: {
-            title: buttons[0]?.text || "Play Game",
-            action: {
-              type: "post",
-              url: postUrl
+          buttons: [
+            {
+              label: "Play Game",
+              action: "post",
+              target: postUrl
+            },
+            {
+              label: "Open Website",
+              action: "link",
+              target: `${process.env.NEXT_PUBLIC_URL}/game`
+            },
+            {
+              label: "Close Frame",
+              action: "post",
+              target: `${process.env.NEXT_PUBLIC_URL}/api/frame/close`
             }
-          }
+          ]
         })}' />
       </head></html>`,
       {

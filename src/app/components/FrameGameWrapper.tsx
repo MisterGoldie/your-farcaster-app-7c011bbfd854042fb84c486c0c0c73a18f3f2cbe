@@ -79,12 +79,22 @@ export default function FrameGameWrapper({ initialGameState }: FrameGameWrapperP
           setContext(await window.sdk.context)
           await window.sdk.actions.ready()
           
+          window.sdk.actions.openUrl = async ({ url, close }: { url: string; close: boolean; }) => {
+            if (close) {
+              window.close()
+            } else {
+              window.open(`${process.env.NEXT_PUBLIC_URL}/game`, '_blank')
+            }
+          }
+
+          window.sdk.actions.close = async () => {
+            handleBackToMenu()
+          }
+
           await window.sdk.actions.setPrimaryButton({
-            text: gameStarted ? "New Game" : "Start Game",
+            text: "Play Game",
             enabled: true
           })
-
-          window.sdk.events.on("primaryButtonClick", handlePrimaryButton)
         }
       } catch (error) {
         console.error('Failed to initialize frame:', error)
@@ -92,13 +102,7 @@ export default function FrameGameWrapper({ initialGameState }: FrameGameWrapperP
     }
 
     initFrame()
-
-    return () => {
-      if (window.sdk) {
-        window.sdk.events.off("primaryButtonClick", handlePrimaryButton)
-      }
-    }
-  }, [gameStarted, isSDKLoaded])
+  }, [isSDKLoaded])
 
   const handlePrimaryButton = async () => {
     if (gameStarted) {
