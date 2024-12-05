@@ -155,28 +155,84 @@ export async function GET(req: NextRequest) {
       game: renderGame,
     }[state] || renderMenu
 
-    return new ImageResponse(
-      React.createElement('div', { style: styles.container },
-        React.createElement('div', { style: styles.card },
-          content()
-        )
-      ),
-      {
-        width: 600,
-        height: 800,
-        fonts: [
-          {
-            name: 'Frijole',
-            data: fontData,
-            style: 'normal',
-            weight: 400
-          }
-        ]
+    const menuStyles = {
+      container: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%',
+        height: '100%',
+        backgroundColor: '#1a1a1a',
+        padding: '20px',
+      },
+      content: {
+        width: '100%',
+        maxWidth: '400px',
+        aspectRatio: '1/1',
+        backgroundColor: '#9333ea',
+        borderRadius: '8px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '20px',
+      },
+      title: {
+        color: 'white',
+        fontSize: '48px',
+        fontWeight: 'bold',
+        textAlign: 'center',
+        margin: '0 0 20px 0',
+      },
+      subtitle: {
+        color: 'white',
+        fontSize: '24px',
+        textAlign: 'center',
+        margin: 0,
       }
+    }
+
+    const renderMenuBoard = () => (
+      React.createElement('div', { style: menuStyles.container },
+        React.createElement('div', { style: menuStyles.content },
+          React.createElement('h1', { style: menuStyles.title }, 'POD Play'),
+          React.createElement('p', { style: menuStyles.subtitle }, 'Tic-Tac-Toe')
+        )
+      )
     )
+
+    if (state === 'menu') {
+      return new ImageResponse(
+        renderMenuBoard(),
+        {
+          width: 1200,
+          height: 628,
+        }
+      )
+    } else {
+      return new ImageResponse(
+        React.createElement('div', { style: styles.container },
+          React.createElement('div', { style: styles.card },
+            content()
+          )
+        ),
+        {
+          width: 600,
+          height: 800,
+          fonts: [
+            {
+              name: 'Frijole',
+              data: fontData,
+              style: 'normal',
+              weight: 400
+            }
+          ]
+        }
+      )
+    }
   } catch (error) {
     console.error('Error generating image:', error)
     return new Response('Error generating image', { status: 500 })
   }
 }
-//
