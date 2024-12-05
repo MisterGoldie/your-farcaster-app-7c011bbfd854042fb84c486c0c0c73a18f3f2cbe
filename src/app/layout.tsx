@@ -6,18 +6,15 @@ export const metadata: Metadata = {
   description: 'A Tic-Tac-Toe game presented by /thepod',
   other: {
     'fc:frame': JSON.stringify({
-      version: 'next',
-      imageUrl: `${process.env.NEXT_PUBLIC_URL}/game-board.png`,
-      button: {
-        title: "Play POD Play",
-        action: {
-          type: "launch_frame",
-          name: "POD Play",
-          url: `${process.env.NEXT_PUBLIC_URL}/api/frame`,
-          splashImageUrl: `${process.env.NEXT_PUBLIC_URL}/splash.png`,
-          splashBackgroundColor: "#9333ea"
+      version: 'vNext',
+      image: `${process.env.NEXT_PUBLIC_URL}/game-board.png`,
+      buttons: [
+        {
+          label: "Play POD Play",
+          action: "post"
         }
-      }
+      ],
+      post_url: `${process.env.NEXT_PUBLIC_URL}/api/frame`
     })
   }
 }
