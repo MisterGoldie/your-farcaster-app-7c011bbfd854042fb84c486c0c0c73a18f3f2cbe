@@ -13,7 +13,7 @@ export const metadata: Metadata = {
         action: {
           type: "launch_frame",
           name: "POD Play",
-          url: "https://v2frametest.vercel.app/",
+          url: "https://v2frametest.vercel.app/howtoplay",
           splashImageUrl: `${process.env.NEXT_PUBLIC_URL}/splash.png`,
           splashBackgroundColor: "#9333ea"
         }
