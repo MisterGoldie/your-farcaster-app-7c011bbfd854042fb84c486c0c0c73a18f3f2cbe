@@ -8,7 +8,7 @@ export async function GET() {
       signature: process.env.FARCASTER_SIGNATURE
     },
     frame: {
-      version: "0.0.0",
+      version: "vNext",
       name: "POD Play Tic-Tac-Toe",
       homeUrl: `${process.env.NEXT_PUBLIC_URL}`,
       iconUrl: `${process.env.NEXT_PUBLIC_URL}/icon.png`,

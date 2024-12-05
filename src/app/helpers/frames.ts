@@ -56,21 +56,11 @@ export async function createFrame(params: {
   actionType?: 'post' | 'link';
   actionTarget?: string;
 }) {
-  const frameEmbed = {
-    version: 'vNext',
-    imageUrl: params.imageUrl,
-    button: {
-      title: params.buttonTitle,
-      action: {
-        type: params.actionType || 'post',
-        ...(params.actionTarget && { target: params.actionTarget })
-      }
-    },
-    aspectRatio: '1:1'
-  }
-
   return `<!DOCTYPE html><html><head>
-    <meta property="fc:frame" content="${JSON.stringify(frameEmbed)}" />
-    <meta property="fc:frame:image:aspect_ratio" content="1:1" />
+    <meta property="fc:frame" content="vNext" />
+    <meta property="fc:frame:image" content="${params.imageUrl}" />
+    <meta property="fc:frame:button:1" content="${params.buttonTitle}" />
+    <meta property="fc:frame:button:1:action" content="${params.actionType || 'post'}" />
+    ${params.actionTarget ? `<meta property="fc:frame:post_url" content="${params.actionTarget}" />` : ''}
     </head></html>`
 }

@@ -36,9 +36,9 @@ export async function generateImage({ fid }: GenerateImageParams): Promise<Image
           display: "flex",
           fontSize: 42,
           color: "white",
-          background: "#9333ea",
-          width: "1000px",
-          height: "1000px",
+          background: "black",
+          width: "600px",
+          height: "600px",
           padding: "0px 0px",
           textAlign: "center",
           justifyContent: "center",
@@ -81,19 +81,17 @@ export async function generateImage({ fid }: GenerateImageParams): Promise<Image
             bottom: "58px",
             left: "33%",
             color: "#fff",
-            fontSize: "24px",
+            fontSize: "18px",
             fontWeight: 400,
             fontFamily: "Pixle_Font",
             width: "100%",
           }}
-        >
-          {username}'s POD Play Game
-        </p>
+        >username: {username}</p>
       </div>
     ),
     {
-      width: 1000,
-      height: 1000,
+      width: 600,
+      height: 600,
     }
   )
 }
@@ -125,4 +123,3 @@ export function generateErrorImage(): ImageResponse {
     }
   )
 }
-//
