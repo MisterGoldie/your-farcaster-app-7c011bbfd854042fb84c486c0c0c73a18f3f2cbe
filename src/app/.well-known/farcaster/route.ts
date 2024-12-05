@@ -96,12 +96,12 @@ declare global {
 export async function GET() {
   const manifest: FarcasterManifest = {
     accountAssociation: {
-      header: "eyJmaWQiOjc0NzIsInR5cGUiOiJjdXN0b2R5Iiwia2V5IjoiMHgzRjE2ODZlNEI1Yjg2NjdEQzY1RTMzQzMxZDVBYTg2NzcxNzhGZDRBIn0",
+      header: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
       payload: "eyJkb21haW4iOiJ2MmZyYW1ldGVzdC52ZXJjZWwuYXBwIn0",
       signature: "MHhlM2MxZmVlMjcxYTY4YWNjYTI3NzM2ZGExNGJkN2YyMWQ5NDJiMzc3NjU1Mzk5NTU2Y2ZmNWFmMmMxODBlMGE4MWU2ZmVkMTMyNzljZmIyNDA2OTI5ODJjMzRlNWQ5MmE5NGM1NjRjYzVjODlmMTQ3Y2Y3ZTQxYWY0MGJmOWQ3YjFi"
     },
     frame: {
-      version: "vNext",
+      version: "0.0.0",
       name: "POD Play Tic-Tac-Toe",
       homeUrl: "https://v2frametest.vercel.app",
       iconUrl: "https://v2frametest.vercel.app/icon.png",
