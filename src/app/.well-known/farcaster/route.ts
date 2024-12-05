@@ -1,6 +1,98 @@
 import { NextResponse } from 'next/server'
 import type { FarcasterManifest } from '../../../types/farcaster'
 
+type Cast = {
+  fid: number;
+  hash: string;
+  text: string;
+  embeds: string[];
+  mentions: string[];
+};
+
+type CastEmbedLaunchContext = {
+  type: 'cast';
+  cast: Cast;
+};
+
+type NotificationLaunchContext = {
+  type: 'notification';
+  notification: {
+    title: string;
+    body: string;
+    id: string;
+  };
+};
+
+type FrameNotificationDetails = {
+  url: string;
+  token: string;
+};
+
+type AddFrameResult = {
+  type: 'success';
+  notificationDetails?: FrameNotificationDetails;
+} | {
+  type: 'error';
+  errorReason: 'invalid-domain-manifest' | 'rejected-by-user';
+};
+
+type LaunchContext = CastEmbedLaunchContext | NotificationLaunchContext;
+
+type User = {
+  fid: number;
+  username?: string;
+  displayName?: string;
+  pfp?: string;
+  bio?: string;
+  location?: {
+    placeId: string;
+    description: string;
+  };
+  custodyAddress: string;
+  verifiedAddresses: {
+    ethereum: string[];
+    solana: string[];
+  };
+  connectedAccounts: {
+    platform: string;
+    username: string;
+  }[];
+};
+
+type FrameSDK = {
+  context: {
+    user: User;
+    location: LaunchContext;
+  };
+  actions: {
+    ready: () => Promise<void>;
+    openUrl: (options: { url: string; close?: boolean }) => Promise<void>;
+    close: (options?: { toast?: { message: string } }) => Promise<void>;
+    addFrame: () => Promise<AddFrameResult>;
+    requestAuthToken: (options?: { exp?: number }) => Promise<string>;
+  };
+  wallet: {
+    ethProvider: any; // EIP-1193 Ethereum Provider
+  };
+};
+
+export type {
+  Cast,
+  CastEmbedLaunchContext,
+  NotificationLaunchContext,
+  FrameNotificationDetails,
+  AddFrameResult,
+  LaunchContext,
+  User,
+  FrameSDK
+};
+
+declare global {
+  interface Window {
+    sdk: FrameSDK;
+  }
+}
+
 export async function GET() {
   const manifest: FarcasterManifest = {
     accountAssociation: {
@@ -11,7 +103,7 @@ export async function GET() {
     frame: {
       version: "vNext",
       name: "POD Play Tic-Tac-Toe",
-      homeUrl: "https://v2frametest.vercel.app/howtoplay",
+      homeUrl: "https://v2frametest.vercel.app",
       iconUrl: "https://v2frametest.vercel.app/icon.png",
       splashImageUrl: "https://v2frametest.vercel.app/splash.png",
       splashBackgroundColor: "#9333ea",

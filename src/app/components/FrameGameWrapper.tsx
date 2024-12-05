@@ -73,36 +73,14 @@ export default function FrameGameWrapper({ initialGameState }: FrameGameWrapperP
 
   useEffect(() => {
     const initFrame = async () => {
-      try {
-        if (window.sdk && !isSDKLoaded) {
-          setIsSDKLoaded(true)
-          setContext(await window.sdk.context)
-          await window.sdk.actions.ready()
-          
-          window.sdk.actions.openUrl = async ({ url, close }: { url: string; close: boolean; }) => {
-            if (close) {
-              window.close()
-            } else {
-              window.open(`${process.env.NEXT_PUBLIC_URL}/game`, '_blank')
-            }
-          }
-
-          window.sdk.actions.close = async () => {
-            handleBackToMenu()
-          }
-
-          await window.sdk.actions.setPrimaryButton({
-            text: "Play Game",
-            enabled: true
-          })
-        }
-      } catch (error) {
-        console.error('Failed to initialize frame:', error)
+      if (window.sdk) {
+        await window.sdk.actions.ready();
+        setIsSDKLoaded(true);
       }
-    }
+    };
 
-    initFrame()
-  }, [isSDKLoaded])
+    initFrame();
+  }, []);
 
   const handlePrimaryButton = async () => {
     if (gameStarted) {
