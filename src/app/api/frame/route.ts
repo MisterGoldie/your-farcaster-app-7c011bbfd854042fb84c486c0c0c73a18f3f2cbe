@@ -120,13 +120,20 @@ export async function POST(req: NextRequest) {
       <html>
         <head>
           <title>POD Play</title>
-          <meta property="fc:frame" content="vNext" />
-          <meta property="fc:frame:image" content="${frameUrl}" />
-          ${buttons.map((button, i) => `
-            <meta property="fc:frame:button:${i + 1}" content="${button.text}" />
-            <meta property="fc:frame:button:${i + 1}:action" content="post" />
-          `).join('')}
-          <meta property="fc:frame:post_url" content="${postUrl}" />
+          <meta name="fc:frame" content='${JSON.stringify({
+            version: 'next',
+            imageUrl: frameUrl,
+            button: {
+              title: "Play Game",
+              action: {
+                type: "launch_frame",
+                name: "POD Play",
+                url: postUrl,
+                splashImageUrl: `${process.env.NEXT_PUBLIC_URL}/splash.png`,
+                splashBackgroundColor: "#9333ea"
+              }
+            }
+          })}' />
         </head>
       </html>`,
       {

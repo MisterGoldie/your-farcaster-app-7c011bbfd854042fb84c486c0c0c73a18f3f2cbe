@@ -57,10 +57,19 @@ export async function createFrame(params: {
   actionTarget?: string;
 }) {
   return `<!DOCTYPE html><html><head>
-    <meta property="fc:frame" content="vNext" />
-    <meta property="fc:frame:image" content="${params.imageUrl}" />
-    <meta property="fc:frame:button:1" content="${params.buttonTitle}" />
-    <meta property="fc:frame:button:1:action" content="${params.actionType || 'post'}" />
-    ${params.actionTarget ? `<meta property="fc:frame:post_url" content="${params.actionTarget}" />` : ''}
+    <meta name="fc:frame" content='${JSON.stringify({
+      version: 'next',
+      imageUrl: params.imageUrl,
+      button: {
+        title: params.buttonTitle,
+        action: {
+          type: "launch_frame",
+          name: "POD Play",
+          url: params.actionTarget || `${process.env.NEXT_PUBLIC_URL}/api/frame`,
+          splashImageUrl: `${process.env.NEXT_PUBLIC_URL}/splash.png`,
+          splashBackgroundColor: "#9333ea"
+        }
+      }
+    })}' />
     </head></html>`
 }

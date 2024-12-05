@@ -14,26 +14,22 @@ export async function POST(request: NextRequest) {
     const { fid } = validationResult.action.interactor
     const generatedImage = `${process.env.NEXT_PUBLIC_URL}/api/frame/services/imggen?fid=${fid}`
 
-    const frameEmbed = {
-      version: 'vNext',
-      imageUrl: generatedImage,
-      buttons: [
-        {
-          title: '🕹️ Play',
-          action: {
-            type: 'launch_frame',
-            name: 'POD Play',
-            url: `https://warpcast.com/~/composer-action?url=https%3A%2F%2F${process.env.NEXT_PUBLIC_URL_SHORT}%2Fapi%2Flauncher`,
-            splashImageUrl: `${process.env.NEXT_PUBLIC_URL}/splash.png`,
-            splashBackgroundColor: '#9333ea'
-          }
-        }
-      ]
-    }
-
     return new Response(
       `<!DOCTYPE html><html><head>
-        <meta property="fc:frame" content="${JSON.stringify(frameEmbed)}" />
+        <meta name="fc:frame" content='${JSON.stringify({
+          version: 'next',
+          imageUrl: generatedImage,
+          button: {
+            title: "Play Game",
+            action: {
+              type: "launch_frame",
+              name: "POD Play",
+              url: `${process.env.NEXT_PUBLIC_URL}/api/frame`,
+              splashImageUrl: `${process.env.NEXT_PUBLIC_URL}/splash.png`,
+              splashBackgroundColor: "#9333ea"
+            }
+          }
+        })}' />
       </head></html>`,
       {
         headers: {

@@ -117,15 +117,16 @@ export default function FrameGameWrapper({ initialGameState }: FrameGameWrapperP
     const frameMetadata = {
       version: 'next',
       imageUrl: `${process.env.NEXT_PUBLIC_URL}/${state === 'menu' ? 'menu' : 'game-board'}.png`,
-      buttons: [
-        {
-          title: state === 'menu' ? 'Start Game' : 'New Game',
-          action: {
-            type: 'post',
-            url: `${process.env.NEXT_PUBLIC_URL}/api/frame`
-          }
+      button: {
+        title: state === 'menu' ? 'Start Game' : 'New Game',
+        action: {
+          type: "launch_frame",
+          name: "POD Play",
+          url: `${process.env.NEXT_PUBLIC_URL}/api/frame`,
+          splashImageUrl: `${process.env.NEXT_PUBLIC_URL}/splash.png`,
+          splashBackgroundColor: "#9333ea"
         }
-      ]
+      }
     }
 
     try {
