@@ -14,7 +14,7 @@ export default function ComposerAction() {
       data: {
         cast: {
           text: message,
-          embeds: ["https://your-farcaster-app.vercel.app"]
+          embeds: ["https://v2frametest.vercel.app"]
         }
       }
     }, "*")
