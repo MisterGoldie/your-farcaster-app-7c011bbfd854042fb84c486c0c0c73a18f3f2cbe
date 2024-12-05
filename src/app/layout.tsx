@@ -10,11 +10,11 @@ export const metadata: Metadata = {
       image: `${process.env.NEXT_PUBLIC_URL}/game-board.png`,
       buttons: [
         {
-          label: "Play POD Play",
-          action: "post"
+          label: "Enter Game",
+          action: "link",
+          target: "https://v2frametest.vercel.app/"
         }
-      ],
-      post_url: `${process.env.NEXT_PUBLIC_URL}/api/frame`
+      ]
     })
   }
 }
