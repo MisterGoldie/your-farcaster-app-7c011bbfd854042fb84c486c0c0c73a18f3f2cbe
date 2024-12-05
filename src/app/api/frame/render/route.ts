@@ -1,4 +1,5 @@
 import { NextRequest } from 'next/server'
+import { ImageResponse } from '@vercel/og'
 import React from 'react'
 
 export async function GET(req: NextRequest) {
@@ -9,18 +10,6 @@ export async function GET(req: NextRequest) {
   const board = searchParams.get('board')?.split(',') || Array(9).fill(null)
 
   try {
-    // Add error handling for font loading
-    let fontData;
-    try {
-      fontData = await fetch(
-        'https://fonts.googleapis.com/css2?family=Frijole&display=swap'
-      ).then((res) => res.arrayBuffer())
-    } catch (error) {
-      console.error('Failed to load font:', error)
-      // Use a fallback font if Frijole fails to load
-      fontData = null
-    }
-
     const styles = {
       container: {
         display: 'flex',
@@ -109,8 +98,13 @@ export async function GET(req: NextRequest) {
     const renderMenu = () => (
       React.createElement('div', { style: styles.content },
         React.createElement('div', { style: styles.header },
-          React.createElement('h1', { style: styles.title }, 'POD Play'),
-          React.createElement('p', { style: styles.subtitle }, 'Tic-Tac-Toe')
+          React.createElement('h1', { style: styles.title }, 'POD Play 🕹️'),
+          React.createElement('p', { style: styles.subtitle }, 'Choose Your Piece')
+        ),
+        React.createElement('div', { style: styles.pieceSelection },
+          React.createElement('div', { style: styles.pieceOption }, '🌶️'),  // Chili
+          React.createElement('div', { style: styles.pieceOption }, '👻'),  // ScaryGary
+          React.createElement('div', { style: styles.pieceOption }, '🎮')   // POD
         )
       )
     )
@@ -118,8 +112,13 @@ export async function GET(req: NextRequest) {
     const renderDifficulty = () => (
       React.createElement('div', { style: styles.content },
         React.createElement('div', { style: styles.header },
-          React.createElement('h1', { style: styles.title }, 'Select Difficulty'),
-          React.createElement('p', { style: styles.subtitle }, 'Choose your level')
+          React.createElement('h1', { style: styles.title }, 'POD Play 🕹️'),
+          React.createElement('p', { style: styles.subtitle }, 'Select Difficulty')
+        ),
+        React.createElement('div', { style: styles.pieceSelection },
+          React.createElement('div', { style: styles.pieceOption }, 'Easy'),
+          React.createElement('div', { style: styles.pieceOption }, 'Medium'),
+          React.createElement('div', { style: styles.pieceOption }, 'Hard')
         )
       )
     )
