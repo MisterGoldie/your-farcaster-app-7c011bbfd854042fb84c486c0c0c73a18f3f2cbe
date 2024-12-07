@@ -7,17 +7,23 @@ export const metadata: Metadata = {
   other: {
     'fc:frame': JSON.stringify({
       version: 'next',
-      imageUrl: `${process.env.NEXT_PUBLIC_URL}/game-board.png`,
-      button: {
-        title: "Play POD Play",
-        action: {
-          type: "launch_frame",
-          name: "POD Play",
-          url: "https://podplayv2.vercel.app/",
-          splashImageUrl: `${process.env.NEXT_PUBLIC_URL}/splash.png`,
-          splashBackgroundColor: "#9333ea"
+      imageUrl: `${process.env.NEXT_PUBLIC_URL}/splash.png`,
+      buttons: [
+        {
+          label: "Start Game",
+          action: {
+            type: "post",
+            url: `${process.env.NEXT_PUBLIC_URL}/api/frame`
+          }
+        },
+        {
+          label: "How to Play",
+          action: {
+            type: "post",
+            url: `${process.env.NEXT_PUBLIC_URL}/api/frame/about`
+          }
         }
-      }
+      ]
     })
   }
 }
