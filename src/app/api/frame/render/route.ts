@@ -1,174 +1,146 @@
 import { NextRequest } from 'next/server'
-import { ImageResponse } from '@vercel/og'
-import React from 'react'
+import { validateWithNeynar } from '@/app/helpers/frames'
 
-export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url)
-  const state = searchParams.get('state') || 'menu'
-  const difficulty = searchParams.get('difficulty')
-  const piece = searchParams.get('piece')
-  const board = searchParams.get('board')?.split(',') || Array(9).fill(null)
+enum GameState {
+  SPLASH = 'splash',
+  MENU = 'menu',
+  CHARACTER_SELECT = 'character',
+  DIFFICULTY = 'difficulty',
+  GAME = 'game',
+  ABOUT = 'about'
+}
 
+interface FrameState {
+  currentState: GameState;
+  difficulty?: 'easy' | 'medium' | 'hard';
+  piece?: 'chili' | 'scarygary' | 'podplaylogo';
+  gameStarted: boolean;
+  lastUpdate: number;
+}
+
+// Helper function to get next state based on current state and button press
+function getNextState(currentState: GameState, buttonIndex: number): GameState {
+  switch (currentState) {
+    case GameState.SPLASH:
+      return buttonIndex === 1 ? GameState.CHARACTER_SELECT : GameState.ABOUT;
+    case GameState.CHARACTER_SELECT:
+      return buttonIndex === 4 ? GameState.MENU : GameState.DIFFICULTY;
+    case GameState.DIFFICULTY:
+      return buttonIndex === 4 ? GameState.CHARACTER_SELECT : GameState.GAME;
+    case GameState.ABOUT:
+    case GameState.GAME:
+      return GameState.MENU;
+    default:
+      return GameState.MENU;
+  }
+}
+
+// Helper function to generate HTML for frame based on state
+function generateFrameHtml(state: GameState): string {
+  const baseUrl = process.env.NEXT_PUBLIC_URL;
+  
+  switch (state) {
+    case GameState.SPLASH:
+      return `<!DOCTYPE html><html><head>
+        <meta property="fc:frame" content="vNext" />
+        <meta property="fc:frame:image" content="${baseUrl}/splash.png" />
+        <meta property="fc:frame:button:1" content="Start Game" />
+        <meta property="fc:frame:button:2" content="How to Play" />
+        <meta property="fc:frame:post_url" content="${baseUrl}/api/frame" />
+      </head></html>`;
+    
+    case GameState.CHARACTER_SELECT:
+      return `<!DOCTYPE html><html><head>
+        <meta property="fc:frame" content="vNext" />
+        <meta property="fc:frame:image" content="${baseUrl}/character-select.png" />
+        <meta property="fc:frame:button:1" content="Play as Chili" />
+        <meta property="fc:frame:button:2" content="Play as ScaryGary" />
+        <meta property="fc:frame:button:3" content="Play as POD" />
+        <meta property="fc:frame:button:4" content="Back" />
+        <meta property="fc:frame:post_url" content="${baseUrl}/api/frame/game" />
+      </head></html>`;
+    
+    // Add other states as needed
+    default:
+      return `<!DOCTYPE html><html><head>
+        <meta property="fc:frame" content="vNext" />
+        <meta property="fc:frame:image" content="${baseUrl}/menu.png" />
+        <meta property="fc:frame:button:1" content="Back to Menu" />
+        <meta property="fc:frame:post_url" content="${baseUrl}/api/frame" />
+      </head></html>`;
+  }
+}
+
+// Helper function to get frame state from storage
+async function getFrameState(fid: string): Promise<FrameState> {
   try {
-    const styles = {
-      container: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: '100%',
-        height: '100%',
-        backgroundColor: '#1a1a1a',
-        padding: '20px',
+    const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/frame/state?fid=${fid}`);
+    const state = await response.json();
+    return state;
+  } catch (error) {
+    return {
+      currentState: GameState.SPLASH,
+      gameStarted: false,
+      lastUpdate: Date.now()
+    };
+  }
+}
+
+// Helper function to update frame state
+async function updateFrameState(fid: string, state: Partial<FrameState>): Promise<void> {
+  try {
+    await fetch(`${process.env.NEXT_PUBLIC_URL}/api/frame/state`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
       },
-      card: {
-        width: '100%',
-        maxWidth: '400px',
-        aspectRatio: '3/4',
-        backgroundColor: 'white',
-        borderRadius: '8px',
-        padding: '4px',
-      },
-      content: {
-        width: '100%',
-        height: '100%',
-        backgroundColor: '#9333ea',
-        borderRadius: '8px',
-        overflow: 'hidden',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        padding: '20px',
-      },
-      header: {
-        backgroundColor: '#7e22ce',
-        padding: '12px',
-        width: '100%',
-        marginBottom: '20px',
-        textAlign: 'center' as const,
-      },
-      title: {
-        fontSize: '32px',
-        fontWeight: 'bold',
-        color: 'white',
-        margin: '0 0 8px 0',
-        fontFamily: 'Frijole',
-      },
-      subtitle: {
-        fontSize: '24px',
-        color: 'white',
-        margin: 0,
-        fontFamily: 'Frijole',
-      },
-      board: {
-        display: 'grid',
-        gridTemplateColumns: 'repeat(3, 1fr)',
-        gap: '8px',
-        width: '280px',
-        height: '280px',
-        backgroundColor: '#7e22ce',
-        padding: '8px',
-        borderRadius: '8px',
-      },
-      cell: {
-        backgroundColor: '#9333ea',
-        borderRadius: '4px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: '40px',
-        color: 'white',
-        fontWeight: 'bold',
-        fontFamily: 'Frijole',
-      },
-      pieceSelection: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: '20px',
-      },
-      pieceOption: {
-        fontSize: '48px',
-        color: 'white',
-        marginBottom: '10px',
-        fontFamily: 'Frijole',
-      }
+      body: JSON.stringify({
+        fid,
+        state
+      })
+    });
+  } catch (error) {
+    console.error('Failed to update frame state:', error);
+  }
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    const { untrustedData, trustedData } = await req.json();
+    const validationResult = await validateWithNeynar(trustedData.messageBytes);
+    
+    if (!validationResult.valid) {
+      throw new Error('Invalid frame message');
     }
 
-    const renderMenu = () => (
-      React.createElement('div', { style: styles.content },
-        React.createElement('div', { style: styles.header },
-          React.createElement('h1', { style: styles.title }, 'POD Play 🕹️'),
-          React.createElement('p', { style: styles.subtitle }, 'Choose Your Piece')
-        ),
-        React.createElement('div', { style: styles.pieceSelection },
-          React.createElement('div', { style: styles.pieceOption }, '🌶️'),  // Chili
-          React.createElement('div', { style: styles.pieceOption }, '👻'),  // ScaryGary
-          React.createElement('div', { style: styles.pieceOption }, '🎮')   // POD
-        )
-      )
-    )
-
-    const renderDifficulty = () => (
-      React.createElement('div', { style: styles.content },
-        React.createElement('div', { style: styles.header },
-          React.createElement('h1', { style: styles.title }, 'POD Play 🕹️'),
-          React.createElement('p', { style: styles.subtitle }, 'Select Difficulty')
-        ),
-        React.createElement('div', { style: styles.pieceSelection },
-          React.createElement('div', { style: styles.pieceOption }, 'Easy'),
-          React.createElement('div', { style: styles.pieceOption }, 'Medium'),
-          React.createElement('div', { style: styles.pieceOption }, 'Hard')
-        )
-      )
-    )
-
-    const renderPieceSelection = () => (
-      React.createElement('div', { style: styles.content },
-        React.createElement('div', { style: styles.header },
-          React.createElement('h1', { style: styles.title }, 'Choose Your Piece'),
-          React.createElement('p', { style: styles.subtitle }, 'X or O')
-        ),
-        React.createElement('div', { style: styles.pieceSelection },
-          React.createElement('div', { style: styles.pieceOption }, 'X'),
-          React.createElement('div', { style: styles.pieceOption }, 'O')
-        )
-      )
-    )
-
-    const renderGame = () => (
-      React.createElement('div', { style: styles.content },
-        React.createElement('div', { style: styles.header },
-          React.createElement('h1', { style: styles.title }, 'POD Play'),
-          React.createElement('p', { style: styles.subtitle }, `${difficulty} Mode`)
-        ),
-        React.createElement('div', { style: styles.board },
-          ...board.map((value, index) => 
-            React.createElement('div', { 
-              key: index,
-              style: styles.cell 
-            }, value || (index + 1).toString())
-          )
-        )
-      )
-    )
-
-    const content = {
-      menu: renderMenu,
-      difficulty: renderDifficulty,
-      piece: renderPieceSelection,
-      game: renderGame,
-    }[state] || renderMenu
-
-    return new ImageResponse(
-      content(),
+    const { fid } = validationResult.action.interactor;
+    const buttonIndex = untrustedData?.buttonIndex || 1;
+    
+    const currentState = await getFrameState(fid);
+    const nextState = getNextState(currentState.currentState, buttonIndex);
+    
+    await updateFrameState(fid, {
+      currentState: nextState,
+      lastUpdate: Date.now()
+    });
+    
+    return new Response(
+      generateFrameHtml(nextState),
       {
-        width: 1200,
-        height: 630,
+        headers: {
+          'Content-Type': 'text/html',
+        },
       }
-    )
+    );
   } catch (error) {
-    console.error('Error generating image:', error)
-    return new Response('Error generating image', { status: 500 })
+    console.error('Frame render error:', error);
+    return new Response(
+      generateFrameHtml(GameState.MENU),
+      {
+        headers: {
+          'Content-Type': 'text/html',
+        },
+      }
+    );
   }
 }
