@@ -21,4 +21,12 @@ type FarcasterManifest = {
   }[];
 };
 
-export type { FarcasterManifest }; 
+export type { FarcasterManifest };
+
+export interface FrameContext {
+  user?: {
+    username: string;
+    // Add other user properties as needed
+  };
+  // Add other context properties as needed
+} 
